@@ -1,5 +1,6 @@
 const state = { lang: 'vi', filter: 'all', activeSkill: null };
 const realTextSkills = new Set(['facebook-post', 'tiktok-reel-post', 'multi-platform-product-description', 'long-to-short-post', 'thirty-day-content-plan', 'poster-thumbnail-brief', 'social-ad-creative-brief']);
+const realImageEndpoints = Object.freeze({ 'product-photo': '/api/product-photo', 'world-checkin': '/api/world-checkin', 'premium-portrait-enhancer': '/api/premium-portrait-enhancer', 'virtual-tryon': '/api/virtual-tryon' });
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const t = (path) => path.split('.').reduce((value, key) => value?.[key], window.AIOS_TRANSLATIONS[state.lang]);
@@ -70,7 +71,7 @@ $('#skill-form').addEventListener('submit', async event => {
     } catch { box.className = 'result-box error'; box.innerHTML = `<span class="result-icon">!</span><b>${t('launcher.generationError')}</b><p>${t('launcher.tryAgain')}</p>`; }
     return;
   }
-  const endpoint = { 'product-photo': '/api/product-photo', 'world-checkin': '/api/world-checkin', 'premium-portrait-enhancer': '/api/premium-portrait-enhancer', 'virtual-tryon': '/api/virtual-tryon' }[state.activeSkill?.id];
+  const endpoint = realImageEndpoints[state.activeSkill?.id];
   if (!endpoint) return setTimeout(() => { box.className = 'result-box success'; box.innerHTML = `<span class="result-icon">✓</span><b>${t('launcher.ready')}</b><p>${t('launcher.readyText')}</p>`; }, 700);
   const formData = new FormData(event.currentTarget);
   if (state.activeSkill.id === 'virtual-tryon') {
