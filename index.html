@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AIOS Lab — các công cụ AI chuyên sâu cho bán hàng, nội dung, hình ảnh và công việc.">
+  <title>AIOS Lab — Một việc, một AI chuyên sâu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav-shell">
+    <nav class="nav container" aria-label="Điều hướng chính">
+      <a class="brand" href="#top" aria-label="AIOS Lab"><span class="brand-mark">A</span><span>AIOS Lab</span></a>
+      <button class="menu-toggle" aria-label="Mở menu" aria-expanded="false">☰</button>
+      <div class="nav-links">
+        <a href="#use-cases" data-i18n="nav.products">Sản phẩm</a>
+        <a href="#pricing" data-i18n="nav.pricing">Gói dịch vụ</a>
+        <a href="#trial" data-i18n="nav.trial">Dùng thử</a>
+        <a href="#faq" data-i18n="nav.help">Trợ giúp</a>
+      </div>
+      <div class="nav-actions">
+        <label class="sr-only" for="language">Ngôn ngữ</label>
+        <select id="language" class="language-select" aria-label="Ngôn ngữ">
+          <option value="vi">Tiếng Việt</option><option value="en">English</option>
+          <option value="ko">한국어 — Coming soon</option><option value="ja">日本語 — Coming soon</option><option value="zh">中文 — Coming soon</option>
+        </select>
+        <a class="button button-small" href="#skills" data-i18n="common.tryFree">Dùng thử miễn phí</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero container">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span><span data-i18n="hero.eyebrow">Bộ công cụ AI cho công việc thực tế</span></div>
+        <h1 data-i18n="hero.title">AIOS Lab — Một việc, một AI chuyên sâu.</h1>
+        <p data-i18n="hero.subtitle">Chọn việc bạn muốn làm. AIOS Lab xử lý phần còn lại.</p>
+        <div class="hero-actions"><a class="button" href="#skills" data-i18n="common.tryFree">Dùng thử miễn phí</a><a class="button button-ghost" href="#pricing" data-i18n="hero.secondary">Khám phá các gói</a></div>
+        <p class="trust-line"><span>✓</span> <span data-i18n="common.trust">Thử trước. Chỉ nâng cấp khi bạn thấy phù hợp.</span></p>
+      </div>
+      <div class="hero-panel" aria-label="Minh họa sản phẩm">
+        <div class="panel-top"><span class="status-dot"></span><span data-i18n="hero.workspace">Không gian làm việc</span><span class="panel-badge">AIOS</span></div>
+        <div class="mock-card"><div class="mock-icon">✦</div><div><strong data-i18n="hero.mockTitle">Bạn muốn hoàn thành việc gì?</strong><p data-i18n="hero.mockText">Chọn một công cụ, mô tả yêu cầu và nhận kết quả.</p></div></div>
+        <div class="mock-grid"><div><span>01</span><b data-i18n="paths.seller">Bán hàng</b></div><div><span>02</span><b data-i18n="paths.content">Tạo nội dung</b></div><div><span>03</span><b data-i18n="paths.photo">Làm ảnh</b></div><div><span>04</span><b data-i18n="paths.work">Công việc</b></div></div>
+      </div>
+    </section>
+
+    <section id="use-cases" class="section container">
+      <div class="section-heading"><div><span class="kicker" data-i18n="paths.kicker">Bắt đầu theo nhu cầu</span><h2 data-i18n="paths.title">Bạn muốn làm gì hôm nay?</h2></div><p data-i18n="paths.subtitle">Không cần biết thuật ngữ AI. Chỉ cần chọn đúng kết quả bạn muốn.</p></div>
+      <div id="path-grid" class="path-grid"></div>
+    </section>
+
+    <section id="skills" class="section section-tint">
+      <div class="container">
+        <div class="section-heading"><div><span class="kicker" data-i18n="skills.kicker">Công cụ nổi bật</span><h2 data-i18n="skills.title">Chuyên sâu cho từng việc</h2></div><p data-i18n="skills.subtitle">Mỗi công cụ tập trung giải quyết thật tốt một nhu cầu cụ thể.</p></div>
+        <div class="filter-row" id="filters" aria-label="Lọc công cụ"></div>
+        <div id="skill-grid" class="skill-grid"></div>
+      </div>
+    </section>
+
+    <section class="section container" id="how">
+      <div class="center-heading"><span class="kicker" data-i18n="how.kicker">Đơn giản từ lần đầu</span><h2 data-i18n="how.title">Ba bước để có kết quả</h2></div>
+      <div id="steps" class="steps"></div>
+    </section>
+
+    <section id="pricing" class="section section-dark">
+      <div class="container"><div class="center-heading light"><span class="kicker" data-i18n="pricing.kicker">Gói dịch vụ rõ ràng</span><h2 data-i18n="pricing.title">Chọn gói phù hợp với cách bạn làm việc</h2><p data-i18n="pricing.subtitle">Bắt đầu miễn phí, nâng cấp bất cứ khi nào bạn cần thêm công cụ.</p></div><div id="pricing-grid" class="pricing-grid"></div></div>
+    </section>
+
+    <section id="trial" class="section container"><div class="trial-card"><div><span class="kicker" data-i18n="trial.kicker">Dùng thử miễn phí</span><h2 data-i18n="trial.title">Bắt đầu bằng một việc thật của bạn.</h2><p data-i18n="trial.text">Không cần cam kết. Chọn công cụ và trải nghiệm trước khi quyết định.</p></div><a class="button button-light" href="#skills" data-i18n="common.startNow">Bắt đầu ngay</a></div></section>
+
+    <section id="faq" class="section container"><div class="center-heading"><span class="kicker">FAQ</span><h2 data-i18n="faq.title">Câu hỏi thường gặp</h2></div><div id="faq-list" class="faq-list"></div></section>
+  </main>
+
+  <footer><div class="container footer-grid"><div><a class="brand brand-light" href="#top"><span class="brand-mark">A</span><span>AIOS Lab</span></a><p data-i18n="footer.blurb">Công cụ AI chuyên sâu, dễ dùng cho công việc mỗi ngày.</p></div><div><b data-i18n="footer.product">Sản phẩm</b><a href="#skills" data-i18n="nav.products">Sản phẩm</a><a href="#pricing" data-i18n="nav.pricing">Gói dịch vụ</a></div><div><b data-i18n="footer.support">Hỗ trợ</b><a href="#faq" data-i18n="nav.help">Trợ giúp</a><a href="#trial">Liên hệ</a></div><div><b data-i18n="footer.legal">Thông tin</b><a href="#faq">Điều khoản</a><a href="#faq">Quyền riêng tư</a></div></div><div class="container footer-bottom"><span>© 2026 AIOS Lab</span><span data-i18n="footer.note">Thiết kế cho cá nhân và doanh nghiệp nhỏ.</span></div></footer>
+
+  <div class="modal" id="skill-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-backdrop" data-close-modal></div><div class="modal-card"><button class="modal-close" data-close-modal aria-label="Đóng">×</button><div class="modal-head"><span class="skill-category" id="modal-category"></span><h2 id="modal-title"></h2><p id="modal-benefit"></p></div><form id="skill-form"><div id="skill-fields"></div><button class="button run-button" type="submit"><span>✦</span><span data-i18n="common.create">Tạo ngay</span></button></form><div class="result-box" id="result-box"><span class="result-icon">◎</span><b data-i18n="launcher.resultTitle">Kết quả sẽ xuất hiện tại đây</b><p data-i18n="launcher.resultText">Bản MVP đang dùng dữ liệu mô phỏng và chưa kết nối hệ thống xử lý AI.</p></div></div>
+  </div>
+  <script src="skills-data.js"></script><script src="i18n.js"></script><script src="app.js"></script>
+</body>
+</html>
