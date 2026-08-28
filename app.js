@@ -31,18 +31,19 @@ function renderFaq() { $('#faq-list').innerHTML = t('faq.items').map((item, i) =
 function openSkill(id) {
   const skill = window.AIOS_SKILLS.find(item => item.id === id); if (!skill) return;
   state.activeSkill = skill; $('#modal-category').textContent = t(`skills.${skill.category}`); $('#modal-title').textContent = state.lang === 'vi' ? skill.titleVi : skill.titleEn; $('#modal-benefit').textContent = state.lang === 'vi' ? skill.benefitVi : skill.benefitEn;
-  const imageFields = `<label class="upload-box"><input name="image" type="file" accept="image/png,image/jpeg,image/webp" ${skill.product ? 'required' : ''}><span class="upload-icon">↑</span><b>${t('launcher.upload')}</b><small>${t('launcher.uploadHint')}</small></label><label>${t('launcher.preset')}<select name="preset"><option>${state.lang === 'vi' ? 'Tự nhiên' : 'Natural'}</option><option>${state.lang === 'vi' ? 'Chuyên nghiệp' : 'Professional'}</option><option>${state.lang === 'vi' ? 'Điện ảnh' : 'Cinematic'}</option><option>${state.lang === 'vi' ? 'Theo yêu cầu' : 'Custom'}</option></select></label><label>${t('launcher.extra')}<textarea name="instruction" placeholder="${t('launcher.extraPlaceholder')}"></textarea></label>`;
+  const imageFields = `<label class="upload-box"><input name="image" type="file" accept="image/png,image/jpeg,image/webp" ${skill.product || skill.id === 'world-checkin' ? 'required' : ''}><span class="upload-icon">↑</span><b>${t('launcher.upload')}</b><small>${t('launcher.uploadHint')}</small></label><label>${t('launcher.preset')}<select name="preset"><option>${state.lang === 'vi' ? 'Tự nhiên' : 'Natural'}</option><option>${state.lang === 'vi' ? 'Chuyên nghiệp' : 'Professional'}</option><option>${state.lang === 'vi' ? 'Điện ảnh' : 'Cinematic'}</option><option>${state.lang === 'vi' ? 'Theo yêu cầu' : 'Custom'}</option></select></label><label>${t('launcher.extra')}<textarea name="instruction" placeholder="${t('launcher.extraPlaceholder')}"></textarea></label>`;
   const textFields = `<label>${t('launcher.mainInput')}<textarea required placeholder="${t('launcher.mainPlaceholder')}"></textarea></label><label>${t('launcher.context')}<input type="text" placeholder="${t('launcher.contextPlaceholder')}"></label>`;
   const productFields = `<div class="field-row"><label>${t('launcher.variations')}<select name="variations"><option>1</option><option>3</option><option>5</option><option>8</option></select></label><label>${t('launcher.scene')}<select name="scene"><option>Studio</option><option>Lifestyle</option><option>Quảng cáo</option><option>Cận cảnh</option><option>Theo yêu cầu</option></select></label></div><div class="field-row"><label>${t('launcher.angle')}<select name="angle"><option>Góc 45°</option><option>Chính diện</option><option>Từ trên xuống</option><option>Cận cảnh</option><option>Theo yêu cầu</option></select></label><label>${t('launcher.use')}<input name="intendedUse" placeholder="${t('launcher.usePlaceholder')}"></label></div>`;
-  $('#skill-fields').innerHTML = skill.type === 'image' ? imageFields + (skill.product ? productFields : '') : textFields;
+  const worldCheckinFields = `<label>${t('launcher.destination')}<input name="destination" required placeholder="${t('launcher.destinationPlaceholder')}"></label>`;
+  $('#skill-fields').innerHTML = skill.type === 'image' ? imageFields + (skill.product ? productFields : skill.id === 'world-checkin' ? worldCheckinFields : '') : textFields;
   $('#result-box').className = 'result-box'; $('#result-box').innerHTML = `<span class="result-icon">◎</span><b>${t('launcher.resultTitle')}</b><p>${t('launcher.resultText')}</p>`;
   $('#skill-modal').classList.add('open'); $('#skill-modal').setAttribute('aria-hidden','false'); document.body.classList.add('modal-open'); $('.modal-close').focus();
 }
 
 function closeModal() { $('#skill-modal').classList.remove('open'); $('#skill-modal').setAttribute('aria-hidden','true'); document.body.classList.remove('modal-open'); }
-function renderProductImages(box, images) {
+function renderProductImages(box, images, altKey = 'launcher.generatedAlt') {
   box.className = 'result-box success image-results'; box.replaceChildren(); const grid = document.createElement('div'); grid.className = 'generated-grid';
-  images.forEach((item, index) => { const figure = document.createElement('figure'); const image = document.createElement('img'); image.src = item.url; image.alt = `${t('launcher.generatedAlt')} ${index + 1}`; image.loading = 'lazy'; figure.append(image); grid.append(figure); });
+  images.forEach((item, index) => { const figure = document.createElement('figure'); const image = document.createElement('img'); image.src = item.url; image.alt = `${t(altKey)} ${index + 1}`; image.loading = 'lazy'; figure.append(image); grid.append(figure); });
   box.append(grid);
 }
 document.addEventListener('click', event => {
@@ -55,13 +56,14 @@ $('#language').addEventListener('change', event => { if (!['vi','en'].includes(e
 $('.menu-toggle').addEventListener('click', event => { const open = $('.nav-links').classList.toggle('open'); event.currentTarget.setAttribute('aria-expanded', String(open)); });
 $('#skill-form').addEventListener('submit', async event => {
   event.preventDefault(); const box = $('#result-box'); box.className = 'result-box loading'; box.innerHTML = `<span class="result-icon">◌</span><b>${t('launcher.working')}</b>`;
-  if (state.activeSkill?.id !== 'product-photo') return setTimeout(() => { box.className = 'result-box success'; box.innerHTML = `<span class="result-icon">✓</span><b>${t('launcher.ready')}</b><p>${t('launcher.readyText')}</p>`; }, 700);
+  if (!['product-photo', 'world-checkin'].includes(state.activeSkill?.id)) return setTimeout(() => { box.className = 'result-box success'; box.innerHTML = `<span class="result-icon">✓</span><b>${t('launcher.ready')}</b><p>${t('launcher.readyText')}</p>`; }, 700);
   const formData = new FormData(event.currentTarget); const image = formData.get('image');
-  if (!(image instanceof File) || !image.size) { box.className = 'result-box error'; box.innerHTML = `<span class="result-icon">!</span><b>${t('launcher.imageRequired')}</b>`; return; }
+  if (!(image instanceof File) || !image.size) { box.className = 'result-box error'; box.innerHTML = `<span class="result-icon">!</span><b>${t(state.activeSkill.id === 'world-checkin' ? 'launcher.referenceRequired' : 'launcher.imageRequired')}</b>`; return; }
   try {
-    const response = await fetch('/api/product-photo', { method: 'POST', body: formData }); const payload = await response.json();
+    const endpoint = state.activeSkill.id === 'world-checkin' ? '/api/world-checkin' : '/api/product-photo';
+    const response = await fetch(endpoint, { method: 'POST', body: formData }); const payload = await response.json();
     if (!response.ok || !payload.success || !Array.isArray(payload.images) || !payload.images.length) throw new Error('Generation failed');
-    renderProductImages(box, payload.images);
+    renderProductImages(box, payload.images, state.activeSkill.id === 'world-checkin' ? 'launcher.worldGeneratedAlt' : 'launcher.generatedAlt');
   } catch { box.className = 'result-box error'; box.innerHTML = `<span class="result-icon">!</span><b>${t('launcher.generationError')}</b><p>${t('launcher.tryAgain')}</p>`; }
 });
 document.addEventListener('keydown', event => { if (event.key === 'Escape') closeModal(); });
