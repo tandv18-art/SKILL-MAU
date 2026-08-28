@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="AIOS Lab — công cụ AI chuyên sâu cho hình ảnh, nội dung, bán hàng và công việc.">
-  <title>AIOS Lab — AI đồng hành, bứt phá giới hạn</title>
+  <title>AIOS Lab — AI kiến tạo tương lai</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -20,11 +20,14 @@
         <a href="#results" data-i18n="nav.results">Kết quả</a>
         <a href="#pricing" data-i18n="nav.pricing">Gói dịch vụ</a>
         <a href="#faq" data-i18n="nav.help">Trợ giúp</a>
+        <a class="nav-account-link" href="#account" data-i18n="nav.signin">Đăng nhập</a>
+        <a class="nav-account-link" href="#skills" data-i18n="nav.signup">Bắt đầu miễn phí</a>
       </div>
       <div class="nav-actions">
         <label class="sr-only" for="language">Ngôn ngữ</label>
         <select id="language" class="language-select" aria-label="Ngôn ngữ"><option value="vi">Tiếng Việt</option><option value="en">English</option><option value="ko">한국어 — Coming soon</option><option value="ja">日本語 — Coming soon</option><option value="zh">中文 — Coming soon</option></select>
-        <a class="button button-small" href="#skills" data-i18n="hero.primary">Khám phá công cụ</a>
+        <a class="login-link" href="#account" data-i18n="nav.signin">Đăng nhập</a>
+        <a class="button button-small" href="#skills" data-i18n="nav.signup">Bắt đầu miễn phí</a>
       </div>
     </nav>
   </header>
@@ -33,7 +36,7 @@
     <section class="hero container">
       <div class="hero-copy">
         <div class="eyebrow"><span></span><span data-i18n="hero.eyebrow">AI THỰC DỤNG · KẾT QUẢ THẬT</span></div>
-        <h1><span data-i18n="hero.titleLead">AI đồng hành,</span> <span class="headline-accent" data-i18n="hero.titleAccent">bứt phá giới hạn.</span></h1>
+        <h1><span data-i18n="hero.titleLead">AI kiến tạo</span> <span class="headline-accent" data-i18n="hero.titleAccent">tương lai.</span></h1>
         <p data-i18n="hero.subtitle">Đơn giản hóa thế giới phức tạp cùng AI.</p>
         <div class="hero-actions"><a class="button" href="#skills" data-i18n="hero.primary">Khám phá công cụ</a><button class="button button-ghost" type="button" data-skill="product-photo" data-i18n="hero.secondary">Thử tạo ảnh</button></div>
       </div>
@@ -46,15 +49,16 @@
             <b data-i18n="showcase.result">Kết quả của bạn</b>
           </div>
         </article>
-        <article class="capability capability-product"><span>01</span><b>Product Photo</b><small data-i18n="showcase.commerce">Hình ảnh thương mại</small></article>
-        <article class="capability capability-portrait"><span>02</span><b>Portrait / Try-on</b><small data-i18n="showcase.identity">Giữ đúng nhận diện</small></article>
-        <article class="capability capability-content"><span>03</span><b>Content AI</b><div class="content-lines"><i></i><i></i><i></i></div></article>
+        <div class="capability-stack">
+          <article class="capability capability-product"><span>01</span><b>Product Photo</b><small data-i18n="showcase.commerce">Hình ảnh thương mại</small></article>
+          <article class="capability capability-portrait"><span>02</span><b>Portrait / Try-on</b><small data-i18n="showcase.identity">Giữ đúng nhận diện</small></article>
+          <article class="capability capability-content"><span>03</span><b>Content AI</b><div class="content-lines"><i></i><i></i><i></i></div></article>
+        </div>
       </div>
     </section>
 
-    <section id="use-cases" class="section compact-section container">
-      <h2 class="section-title" data-i18n="paths.title">CHỌN NHANH</h2>
-      <div id="path-grid" class="path-grid"></div>
+    <section id="use-cases" class="category-section">
+      <div class="container"><div id="category-row" class="category-row" aria-label="Danh mục công cụ"></div></div>
     </section>
 
     <section id="skills" class="section section-tint">
@@ -88,7 +92,7 @@
     <section id="faq" class="section container"><h2 class="section-title faq-title" data-i18n="faq.title">CÂU HỎI</h2><div id="faq-list" class="faq-list"></div></section>
   </main>
 
-  <footer><div class="container footer-grid"><div><a class="brand brand-light" href="#top"><span class="brand-mark">A</span><span>AIOS Lab</span></a><p data-i18n="footer.blurb">AI chuyên sâu cho những công việc thực tế.</p></div><div><b data-i18n="footer.product">Sản phẩm</b><a href="#skills" data-i18n="footer.tools">Công cụ AI</a><a href="#pricing" data-i18n="nav.pricing">Gói dịch vụ</a></div><div><b data-i18n="footer.support">Hỗ trợ</b><a href="#faq" data-i18n="nav.help">Trợ giúp</a><a href="mailto:support@aioslab.vn" data-i18n="footer.contact">Liên hệ</a></div><div><b data-i18n="footer.account">Tài khoản</b><a href="#top" data-i18n="footer.signin">Đăng nhập</a></div><div><b data-i18n="footer.legal">Pháp lý</b><a href="#faq" data-i18n="footer.terms">Điều khoản</a><a href="#faq" data-i18n="footer.privacy">Quyền riêng tư</a></div></div><div class="container footer-bottom"><span>© 2026 AIOS Lab</span><span data-i18n="footer.note">AI thực dụng. Kết quả rõ ràng.</span></div></footer>
+  <footer><div class="container footer-grid"><div><a class="brand brand-light" href="#top"><span class="brand-mark">A</span><span>AIOS Lab</span></a><p data-i18n="footer.blurb">AI chuyên sâu cho những công việc thực tế.</p></div><div><b data-i18n="footer.product">Sản phẩm</b><a href="#skills" data-i18n="footer.tools">Công cụ AI</a><a href="#pricing" data-i18n="nav.pricing">Gói dịch vụ</a></div><div><b data-i18n="footer.support">Hỗ trợ</b><a href="#faq" data-i18n="nav.help">Trợ giúp</a><a href="mailto:support@aioslab.vn" data-i18n="footer.contact">Liên hệ</a></div><div id="account"><b data-i18n="footer.account">Tài khoản</b><a href="#account" data-i18n="footer.signin">Đăng nhập</a><a href="#account" data-i18n="footer.signup">Đăng ký</a></div><div><b data-i18n="footer.legal">Pháp lý</b><a href="#faq" data-i18n="footer.terms">Điều khoản</a><a href="#faq" data-i18n="footer.privacy">Quyền riêng tư</a></div></div><div class="container footer-bottom"><span>© 2026 AIOS Lab</span><span data-i18n="footer.note">AI thực dụng. Kết quả rõ ràng.</span></div></footer>
 
   <a class="support-control" href="mailto:support@aioslab.vn" aria-label="Liên hệ hỗ trợ"><span>?</span><b data-i18n="footer.support">Hỗ trợ</b></a>
   <div class="modal" id="skill-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">

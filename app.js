@@ -6,23 +6,35 @@ const t = (path) => path.split('.').reduce((value, key) => value?.[key], window.
 function applyTranslations() {
   document.documentElement.lang = state.lang;
   $$('[data-i18n]').forEach((node) => { const value = t(node.dataset.i18n); if (typeof value === 'string') node.textContent = value; });
-  renderPaths(); renderSkills(); renderSteps(); renderPricing(); renderFaq();
+  renderCategories();
+  renderSkills();
+  renderSteps();
+  renderPricing();
+  renderFaq();
 }
 
-function renderPaths() {
-  const icons = { seller:'▣', content:'✦', photo:'◫', all:'✓' };
-  $('#path-grid').innerHTML = ['seller','content','photo','all'].map(key => `<button class="path-card" data-path="${key}"><span class="path-icon">${icons[key]}</span><span><b>${t(`paths.${key}`)}</b><small>${t(`paths.${key}Text`)}</small></span><i>→</i></button>`).join('');
+function renderCategories() {
+  const categories = [...new Set(window.AIOS_SKILLS.map(skill => skill.category)), 'all'];
+  $('#category-row').innerHTML = categories.map(key => `<button class="category-chip ${state.filter === key ? 'active' : ''}" type="button" data-filter="${key}">${t(`skills.${key}`)}</button>`).join('');
 }
 
 function renderSkills() {
   const skills = window.AIOS_SKILLS.filter(skill => state.filter === 'all' ? (state.showAll || skill.featured) : skill.category === state.filter);
   const categoryIcons = { seller:'▣', content:'✦', photo:'◫', work:'✓' };
   $('#skill-grid').innerHTML = skills.map(skill => `<article class="skill-card"><div class="skill-card-top"><span class="skill-icon ${skill.category}">${categoryIcons[skill.category]}</span><span class="skill-type">${t(`skills.${skill.category}`)}</span></div><h3>${state.lang === 'vi' ? skill.titleVi : skill.titleEn}</h3><p>${state.lang === 'vi' ? skill.benefitVi : skill.benefitEn}</p><button class="text-button" data-skill="${skill.id}">${t('skills.open')} <span>→</span></button></article>`).join('');
+  $('#show-all-skills').hidden = state.showAll;
 }
 
 function renderSteps() { $('#steps').innerHTML = t('how.steps').map(step => `<article><span>${step[0]}</span><h3>${step[1]}</h3><p>${step[2]}</p></article>`).join(''); }
-function renderPricing() { const plans = window.AIOS_PRICING.filter(plan => plan.enabled); $('#pricing-grid').innerHTML = plans.map(plan => { const items = state.lang === 'vi' ? plan.benefitsVi : plan.benefitsEn; const message = state.lang === 'vi' ? plan.messageVi : plan.messageEn; return `<article class="price-card ${plan.recommended ? 'recommended' : ''}">${plan.recommended ? `<span class="recommend-badge">${t('pricing.recommended')}</span>` : ''}<h3>${plan.name}</h3><div class="price"><b>${plan.price}</b>${plan.billingPeriod ? `<span>${t('pricing.month')}</span>` : ''}</div><p>${message}</p><hr><small>${t('pricing.includes')}</small><ul>${items.map(item => `<li>✓ <span>${item}</span></li>`).join('')}</ul><a class="button ${plan.recommended ? '' : 'button-outline'}" href="#skills">${plan.id === 'free' ? t('common.tryFree') : t('common.choose')}</a></article>`; }).join(''); }
-function renderFaq() { $('#faq-list').innerHTML = t('faq.items').map((item, i) => `<details ${i === 0 ? 'open' : ''}><summary>${item[0]}<span>+</span></summary><p>${item[1]}</p></details>`).join(''); }
+function renderPricing() {
+  const plans = Array.isArray(window.AIOS_PRICING) ? window.AIOS_PRICING.filter(plan => plan.enabled) : [];
+  $('#pricing-grid').innerHTML = plans.map(plan => { const items = state.lang === 'vi' ? plan.benefitsVi : plan.benefitsEn; const message = state.lang === 'vi' ? plan.messageVi : plan.messageEn; return `<article class="price-card ${plan.recommended ? 'recommended' : ''}">${plan.recommended ? `<span class="recommend-badge">${t('pricing.recommended')}</span>` : ''}<h3>${plan.name}</h3><div class="price"><b>${plan.price}</b>${plan.billingPeriod ? `<span>${t('pricing.month')}</span>` : ''}</div><p>${message}</p><hr><small>${t('pricing.includes')}</small><ul>${items.map(item => `<li>✓ <span>${item}</span></li>`).join('')}</ul><a class="button ${plan.recommended ? '' : 'button-outline'}" href="#skills">${plan.id === 'free' ? t('common.tryFree') : t('common.choose')}</a></article>`; }).join('');
+}
+function renderFaq() {
+  const items = t('faq.items') || [];
+  $('#faq-list').innerHTML = items.map((item, i) => `<details ${i === 0 ? 'open' : ''}><summary>${item[0]}<span aria-hidden="true">${i === 0 ? '−' : '+'}</span></summary><p>${item[1]}</p></details>`).join('');
+  $$('#faq-list details').forEach(details => details.addEventListener('toggle', () => { $('summary span', details).textContent = details.open ? '−' : '+'; }));
+}
 
 function openSkill(id) {
   const skill = window.AIOS_SKILLS.find(item => item.id === id); if (!skill) return;
@@ -43,8 +55,8 @@ function renderProductImages(box, images, altKey = 'launcher.generatedAlt') {
   box.append(grid);
 }
 document.addEventListener('click', event => {
-  const showAll = event.target.closest('#show-all-skills'); if (showAll) { state.filter = 'all'; state.showAll = true; renderSkills(); showAll.remove(); }
-  const path = event.target.closest('[data-path]'); if (path) { state.filter = path.dataset.path; state.showAll = true; renderSkills(); $('#skills').scrollIntoView({behavior:'smooth'}); }
+  const showAll = event.target.closest('#show-all-skills'); if (showAll) { state.filter = 'all'; state.showAll = true; renderCategories(); renderSkills(); }
+  const filter = event.target.closest('[data-filter]'); if (filter) { state.filter = filter.dataset.filter; state.showAll = true; renderCategories(); renderSkills(); $('#skills').scrollIntoView({behavior:'smooth'}); }
   const skill = event.target.closest('[data-skill]'); if (skill) openSkill(skill.dataset.skill);
   if (event.target.closest('[data-close-modal]')) closeModal();
 });
