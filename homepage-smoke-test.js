@@ -12,7 +12,7 @@ class FakeElement {
   querySelector() { return new FakeElement(); }
 }
 
-const ids = ['category-row','skill-grid','show-all-skills','steps','pricing-grid','faq-list','language','skill-form','skill-modal','modal-category','modal-title','modal-benefit','skill-fields','result-box'];
+const ids = ['category-row','skill-grid','show-all-skills','steps','pricing-grid','faq-list','language','skill-form','auth-form','image-viewer','skill-modal','modal-category','modal-title','modal-benefit','skill-fields','result-box'];
 const elements = Object.fromEntries(ids.map(id => [id, new FakeElement(id)]));
 const document = {
   documentElement: { lang: 'vi' }, body: { classList: { add() {}, remove() {} } },
@@ -40,6 +40,8 @@ async function main() {
   assert.ok(context.AIOS_TRANSLATIONS.vi);
   assert.equal((elements['skill-grid'].innerHTML.match(/class="skill-card"/g) || []).length, 6);
   assert.equal((elements['pricing-grid'].innerHTML.match(/class="price-card/g) || []).length, 6);
+  assert.equal((elements['pricing-grid'].innerHTML.match(/data-plan=/g) || []).length, 6);
+  assert.ok(!elements['pricing-grid'].innerHTML.includes('href="#skills"'));
   assert.equal((elements['faq-list'].innerHTML.match(/<details/g) || []).length, context.AIOS_TRANSLATIONS.vi.faq.items.length);
   assert.equal((elements.steps.innerHTML.match(/<article>/g) || []).length, 3);
   console.log('Homepage DOM smoke test passed: 6 skills, 6 plans, 3 FAQ rows, 3 process steps.');
