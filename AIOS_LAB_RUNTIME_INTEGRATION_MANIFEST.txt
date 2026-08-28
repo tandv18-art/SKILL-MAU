@@ -1,0 +1,38 @@
+AIOS LAB RUNTIME INTEGRATION MANIFEST
+
+Source local HEAD: 802d48a
+Patch format: unified Git diff with context and full blob indexes
+
+FILES ADDED
+- facebook-post/SKILL.md
+- tiktok-reel-post/SKILL.md
+- multi-platform-product-description/SKILL.md
+- long-to-short-post/SKILL.md
+- thirty-day-content-plan/SKILL.md
+- poster-thumbnail-brief/SKILL.md
+- social-ad-creative-brief/SKILL.md
+
+FILES MODIFIED
+- skills-data.js
+- app.js
+- server.js
+
+EXPECTED ROUTES
+- POST /api/product-photo (preserved existing route)
+- POST /api/world-checkin (preserved existing route)
+- POST /api/premium-portrait-enhancer
+- POST /api/virtual-tryon
+- POST /api/text-skill
+
+EXPECTED NEW TEXT SKILL IDS
+- facebook-post
+- tiktok-reel-post
+- multi-platform-product-description
+- long-to-short-post
+- thirty-day-content-plan
+- poster-thumbnail-brief
+- social-ad-creative-brief
+
+APPLICATION
+- Apply from the repository root with: git apply --3way AIOS_LAB_RUNTIME_INTEGRATION.patch
+- Review conflicts in app.js, server.js, and skills-data.js in favor of newer remote UI while retaining the runtime additions.
