@@ -10,7 +10,8 @@ const PUBLIC_FILES = new Map([
   ['/styles.css', ['styles.css', 'text/css; charset=utf-8']],
   ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
   ['/i18n.js', ['i18n.js', 'text/javascript; charset=utf-8']],
-  ['/skills-data.js', ['skills-data.js', 'text/javascript; charset=utf-8']]
+  ['/skills-data.js', ['skills-data.js', 'text/javascript; charset=utf-8']],
+  ['/pricing-config.js', ['pricing-config.js', 'text/javascript; charset=utf-8']]
 ]);
 
 const PRODUCT_POLICY = `Create premium, realistic commercial product photography from the supplied reference image. Treat the product as the source of truth. Strictly preserve its identity, shape, proportions, colors, material appearance, logo, labels, packaging, and visible design details. You may change only camera angle, crop, composition, placement, lighting, background, studio or lifestyle scene, close-up presentation, and advertising layout. Never invent product features, claims, accessories, labels, text, materials, certifications, or packaging details.`;
