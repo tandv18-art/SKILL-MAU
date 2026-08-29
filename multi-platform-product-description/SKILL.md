@@ -1,10 +1,14 @@
 ---
 name: multi-platform-product-description
-description: Adapts confirmed product information into descriptions for multiple commerce and social platforms. Use when product copy must vary by channel without changing facts.
+description: Adapts confirmed product facts into distinct, concise social and commerce copy for requested platforms without changing the product truth.
 ---
 
 # Multi-platform Product Description
 
-Write in the requested language; default to Vietnamese when unspecified. Return clearly labeled, ready-to-use descriptions for only the requested platforms, adapting length, structure, tone, and call to action for each.
+Write in the requested language; default to Vietnamese. Return copy only for requested channels and adapt the structure instead of repeating one paragraph:
+- Facebook: short persuasive post with readable paragraphs.
+- TikTok / Reel: hook plus short spoken or caption direction.
+- Instagram: visual-first concise caption.
+- Marketplace / e-commerce: scannable facts, benefits supported by facts, and practical use.
 
-Preserve supplied product facts exactly. Never invent specifications, certifications, ingredients, benefits, reviews, guarantees, prices, promotions, or availability.
+Lead with a concrete value, keep each version mobile-readable, and use a light CTA only when relevant. Never invent specifications, certifications, ingredients, benefits, reviews, guarantees, prices, promotions, availability, policies, deadlines, statistics, testimonials, or business facts.

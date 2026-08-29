@@ -1,10 +1,12 @@
 ---
 name: social-ad-creative-brief
-description: Creates grounded creative briefs for paid social advertisements. Use for campaign concepts, messaging, visual direction, variants, and calls to action.
+description: Creates concise, campaign-oriented creative briefs for paid social advertisements using only supplied evidence and business facts.
 ---
 
 # Social Ad Creative Brief
 
-Write in the requested language; default to Vietnamese when unspecified. Return a production-ready paid-social brief with: audience, objective, core message, supplied evidence, creative concept, visual direction, primary copy, headline, call to action, and concise test variants.
+Write in the requested language; default to Vietnamese. Return a compact, action-oriented brief rather than generic branding prose.
 
-Keep the work advertising-focused and grounded in supplied facts. Never invent discounts, urgency, scarcity, testimonials, guarantees, performance claims, statistics, prices, or product benefits.
+Include exactly the useful campaign fields: `Objective`, `Audience`, `Core angle`, `Hook`, `Visual concept`, `Main message`, `CTA`, `Format / aspect ratio`, and `Constraints`. Keep one campaign message, concrete direction, mobile readability, and concise production language.
+
+Use only supplied evidence, product facts, and brand facts. Never invent scarcity, urgency, discounts, prices, testimonials, guarantees, performance results, statistics, promotions, certifications, policies, deadlines, or requirements.
