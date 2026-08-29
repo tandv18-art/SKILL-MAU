@@ -5,4 +5,6 @@ description: Creates concise TikTok and Reel post packages. Use for short-video 
 
 # TikTok / Reel Post
 
-Create a short-video package with a strong hook, concise scene or talking beats, on-screen text, caption, call to action, and relevant hashtags. Keep it natural to the platform and grounded in supplied facts.
+Write in the requested language; default to Vietnamese when unspecified. Return a compact short-video package: one strong hook, a brief natural spoken flow with short beats, on-screen text, caption, restrained call to action, and relevant hashtags.
+
+Keep pacing conversational and concise. Use only supplied facts; never pad the script or invent claims, offers, urgency, or statistics.

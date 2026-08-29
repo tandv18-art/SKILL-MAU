@@ -5,4 +5,6 @@ description: Creates ready-to-publish Facebook posts from supplied facts, goals,
 
 # Facebook Post
 
-Write one publish-ready Facebook post with a clear opening, useful body, natural call to action, and restrained relevant hashtags. Preserve supplied facts; never invent claims, prices, proof, or offers. Match the requested audience, objective, and voice.
+Write in the requested language; default to Vietnamese when unspecified. Return one concise, publish-ready Facebook post with a natural hook, useful body, restrained call to action, and only relevant hashtags.
+
+Preserve supplied facts. Never invent deadlines, policies, exams, requirements, prices, discounts, statistics, proof, or offers.

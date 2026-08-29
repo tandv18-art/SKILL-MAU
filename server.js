@@ -42,6 +42,7 @@ async function readJson(req) {
 
 async function generateProductPhotos(req, res) {
   if (!process.env.OPENAI_API_KEY) return json(res, 503, { success: false, error: 'Runtime is not configured.' });
+  if (!String(req.headers['content-type'] || '').toLowerCase().startsWith('multipart/form-data')) return json(res, 415, { success: false, error: 'Multipart form data is required.' });
   const form = await readForm(req);
   const image = form.get('image');
   if (!(image instanceof Blob) || !image.size) return json(res, 400, { success: false, error: 'A product image is required.' });
@@ -104,6 +105,7 @@ async function generateWorldCheckin(req, res) {
 
 async function generatePortrait(req, res) {
   if (!process.env.OPENAI_API_KEY) return json(res, 503, { success: false, error: 'Runtime is not configured.' });
+  if (!String(req.headers['content-type'] || '').toLowerCase().startsWith('multipart/form-data')) return json(res, 415, { success: false, error: 'Multipart form data is required.' });
   const form = await readForm(req); const image = form.get('image');
   if (!(image instanceof Blob) || !image.size) return json(res, 400, { success: false, error: 'A portrait image is required.' });
   if (!IMAGE_TYPES.has(image.type)) return json(res, 415, { success: false, error: 'Unsupported image format.' });
@@ -114,6 +116,7 @@ async function generatePortrait(req, res) {
 
 async function generateTryon(req, res) {
   if (!process.env.OPENAI_API_KEY) return json(res, 503, { success: false, error: 'Runtime is not configured.' });
+  if (!String(req.headers['content-type'] || '').toLowerCase().startsWith('multipart/form-data')) return json(res, 415, { success: false, error: 'Multipart form data is required.' });
   const form = await readForm(req); const person = form.get('personImage'); const garment = form.get('garmentImage');
   if (!(person instanceof Blob) || !person.size || !(garment instanceof Blob) || !garment.size) return json(res, 400, { success: false, error: 'Both person and garment images are required.' });
   if (!IMAGE_TYPES.has(person.type) || !IMAGE_TYPES.has(garment.type)) return json(res, 415, { success: false, error: 'Unsupported image format.' });

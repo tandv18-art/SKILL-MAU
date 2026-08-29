@@ -5,4 +5,6 @@ description: Condenses long source material into accurate short social posts. Us
 
 # Long to Short Post
 
-Extract the essential message and create a concise, standalone post. Preserve meaning, names, numbers, qualifications, and attribution. Remove repetition without adding unsupported facts. Include a natural call to action only when appropriate.
+Write in the requested language; default to Vietnamese when unspecified. Return one standalone post materially shorter than the source, retaining the essential message, names, numbers, qualifications, attribution, and important facts.
+
+Remove repetition without changing meaning or adding unsupported facts. Add a restrained call to action only when the source or request supports one.

@@ -5,4 +5,6 @@ description: Creates production-ready visual briefs for posters and thumbnails. 
 
 # Poster / Thumbnail Brief
 
-Return one clear visual brief covering objective, format, focal subject, headline, supporting copy, hierarchy, composition, color, typography direction, and safe-area notes. Optimize for fast comprehension at the intended display size; do not invent brand assets.
+Write in the requested language; default to Vietnamese when unspecified. Return exactly these labeled fields: `Objective`, `Format`, `Primary message`, `Focal subject`, `Headline`, `Supporting copy`, `Visual hierarchy`, `Composition`, `Color direction`, `Typography direction`, `Safe-area notes`.
+
+Keep one unmistakable visual message optimized for the intended display size. Use only supplied brand and factual information; never invent logos, assets, claims, offers, or product details.
