@@ -108,6 +108,7 @@ async function generateWorldCheckin(req, res) {
   providerForm.set('n', '1');
   providerForm.set('size', '1536x1024');
   providerForm.set('quality', 'high');
+  providerForm.set('input_fidelity', 'high');
 
   const baseUrl = (process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1').replace(/\/$/, '');
   const response = await fetch(`${baseUrl}/images/edits`, { method: 'POST', headers: { authorization: `Bearer ${process.env.OPENAI_API_KEY}` }, body: providerForm });
@@ -125,7 +126,7 @@ async function generatePortrait(req, res) {
   if (!(image instanceof Blob) || !image.size) return json(res, 400, { success: false, error: 'A portrait image is required.' });
   if (!IMAGE_TYPES.has(image.type)) return json(res, 415, { success: false, error: 'Unsupported image format.' });
   const preset = String(form.get('preset') || 'natural').slice(0, 200); const instruction = String(form.get('instruction') || '').slice(0, 2000);
-  const providerForm = new FormData(); providerForm.set('model', process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5'); providerForm.set('image', image, image.name || 'portrait.png'); providerForm.set('prompt', buildPortraitPrompt(preset, instruction)); providerForm.set('n', '1'); providerForm.set('size', '1024x1536'); providerForm.set('quality', 'high');
+  const providerForm = new FormData(); providerForm.set('model', process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5'); providerForm.set('image', image, image.name || 'portrait.png'); providerForm.set('prompt', buildPortraitPrompt(preset, instruction)); providerForm.set('n', '1'); providerForm.set('size', '1024x1536'); providerForm.set('quality', 'high'); providerForm.set('input_fidelity', 'high');
   const payload = await callImageProvider(providerForm, 'Portrait provider rejected the request.'); return json(res, 200, { success: true, images: payload });
 }
 
@@ -135,7 +136,7 @@ async function generateTryon(req, res) {
   const form = await readForm(req); const person = form.get('personImage'); const garment = form.get('garmentImage');
   if (!(person instanceof Blob) || !person.size || !(garment instanceof Blob) || !garment.size) return json(res, 400, { success: false, error: 'Both person and garment images are required.' });
   if (!IMAGE_TYPES.has(person.type) || !IMAGE_TYPES.has(garment.type)) return json(res, 415, { success: false, error: 'Unsupported image format.' });
-  const instruction = String(form.get('instruction') || '').slice(0, 2000); const providerForm = new FormData(); providerForm.set('model', process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5'); providerForm.append('image[]', person, person.name || 'person.png'); providerForm.append('image[]', garment, garment.name || 'garment.png'); providerForm.set('prompt', buildTryonPrompt(instruction)); providerForm.set('n', '1'); providerForm.set('size', '1024x1536'); providerForm.set('quality', 'high');
+  const instruction = String(form.get('instruction') || '').slice(0, 2000); const providerForm = new FormData(); providerForm.set('model', process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5'); providerForm.append('image[]', person, person.name || 'person.png'); providerForm.append('image[]', garment, garment.name || 'garment.png'); providerForm.set('prompt', buildTryonPrompt(instruction)); providerForm.set('n', '1'); providerForm.set('size', '1024x1536'); providerForm.set('quality', 'high'); providerForm.set('input_fidelity', 'high');
   const payload = await callImageProvider(providerForm, 'The image provider rejected multi-image try-on.'); return json(res, 200, { success: true, images: payload });
 }
 
