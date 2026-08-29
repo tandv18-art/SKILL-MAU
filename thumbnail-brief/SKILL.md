@@ -1,14 +1,12 @@
 ---
 name: thumbnail-brief
-description: Creates a concise, high-converting visual brief for a social or video thumbnail. Use when a user needs one production-ready thumbnail concept tailored to a platform, audience, topic, and desired click behavior.
+description: Creates one compact, production-ready social or video thumbnail concept tailored to a platform, audience, topic, and desired click behavior.
 ---
 
 # Thumbnail Brief
 
-1. Infer the platform, audience, topic, desired emotion, focal subject, and intended click behavior only from supplied context; user instructions override defaults.
-2. Define one distinctive visual concept with specific subject placement, framing, expression, background, composition, lighting, contrast, and focal hierarchy.
-3. Specify minimal, punchy thumbnail text and its hierarchy only when useful, preserving requested wording and optimizing every element for small-screen clarity.
-4. Remove clutter, weak secondary elements, and generic direction; never invent claims, numbers, outcomes, offers, or product facts.
-5. Return only the concise production brief in the requested format unless the user explicitly asks for explanation.
+Write in the requested language; default to Vietnamese. Return one concise thumbnail concept, not a design essay.
 
-Preserve all supplied facts, names, numbers, intent, constraints, and requested format. Never invent missing information.
+Specify: `Platform / aspect ratio`, `One visual message`, `Primary subject`, `Headline / text priority`, `Hierarchy`, `Composition`, `Expression or mood`, `Contrast / color direction`, and `Constraints`. Optimize the focal point and minimal text for immediate small-screen comprehension.
+
+Preserve supplied wording, facts, names, numbers, brand assets, and constraints. Avoid clutter, misleading clickbait, or invented claims, prices, offers, outcomes, statistics, testimonials, certifications, and product details.
