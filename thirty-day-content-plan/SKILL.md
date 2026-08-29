@@ -5,8 +5,8 @@ description: Builds a specific, practical 30-day social content calendar from a 
 
 # 30-day Content Plan
 
-Write in the requested language; default to Vietnamese. Return exactly one table with exactly 30 populated data rows and exactly four columns: `Day`, `Topic`, `Angle`, `Suggested format`.
+When 30 days are requested, return exactly one concise 30-row table with these columns: `Day | Topic | Angle | Suggested format`. Put one specific, self-contained idea in each row and do not add a sales section after the table unless requested.
 
-Make every Topic specific and self-contained. Make every Angle state the actual message, value, or execution idea. Use practical formats such as Reel, short video, carousel, photo post, text post, or story. Vary angles and formats without filler or repetition.
+Keep every cell short rather than expanding into advisory prose. Mix practical formats where appropriate: Reel/Short, carousel, image, text, and story/poll. Avoid filler and repeated angles.
 
-Keep every cell concise and executable. Use only supplied goals, audience context, resources, product facts, and business facts. Never invent offers, events, policies, deadlines, statistics, guarantees, promotions, testimonials, or certifications.
+Do not assume existing teachers, testimonials, live sessions, sample classes, discounts, events, communities, products, services, or assets unless supplied. Frame hypothetical suggestions as ideas, not existing facts, and avoid unsupported official or measurable claims.

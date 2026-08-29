@@ -5,11 +5,12 @@ description: Creates concise, publish-ready Facebook posts from supplied facts, 
 
 # Facebook Post
 
-Write in the requested language; default to Vietnamese. Unless long-form is requested, target 180–320 words and never default to article-style prose.
+Follow explicit user length and format instructions. Otherwise, write approximately 120–180 Vietnamese words in short mobile-readable paragraphs without markdown bold syntax, an essay structure, or a long introduction.
 
-Return one mobile-readable post:
-- Hook: 1–2 short lines with the first useful or interesting point.
-- Body: 3–5 concise paragraphs or concrete points.
-- Takeaway, then one optional light CTA and at most 3 useful hashtags.
+Return one post in this order:
+- One strong hook.
+- 3–5 concise main points using generic, practical examples for broad topics.
+- One short takeaway.
+- One optional neutral CTA and 0–2 relevant hashtags.
 
-Keep one main message, a natural human tone, and restrained emojis. Never use misleading clickbait or invent prices, policies, deadlines, requirements, statistics, guarantees, promotions, testimonials, certifications, or business facts.
+Do not introduce unsupported official or domain-specific facts. Never invent an offer, freebie, consultation, checklist, file, discount, inbox/DM action, or comment-to-receive CTA.

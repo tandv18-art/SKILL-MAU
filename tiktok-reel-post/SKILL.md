@@ -5,12 +5,13 @@ description: Creates platform-native TikTok and Reel post packages with hooks, s
 
 # TikTok / Reel Post
 
-Write in the requested language; default to Vietnamese. Return short-form video content, never an article unless long-form is explicitly requested.
+Return exactly the number of ideas requested; otherwise return one. Keep every idea compact, video-ready, generic-first for broad educational topics, and free of unsupported exact factual claims.
 
-Use this compact structure:
-- Hook for the first 1–2 seconds.
-- Spoken flow of 3–5 short, natural beats.
-- One payoff or takeaway.
-- Short caption and optional light CTA; use at most 3 useful hashtags.
+For each idea, return only:
+1. Hook.
+2. Three short, natural spoken beats.
+3. Payoff.
+4. Short caption.
+5. 0–2 relevant hashtags.
 
-Keep one message, conversational pacing, restrained emojis, and concrete wording. Avoid formal narration, oversized captions, fake curiosity, and invented claims, prices, deadlines, promotions, statistics, testimonials, guarantees, policies, or requirements.
+Vary hooks naturally. Do not add mini-essays, unnecessary explanation, freebies, templates, checklists, consultation or service offers, inbox/DM offers, or comment-to-receive prompts.
