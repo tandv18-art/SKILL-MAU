@@ -1,4 +1,6 @@
 const state = { lang: 'vi', filter: 'all', activeSkill: null };
+const realTextSkills = new Set(['facebook-post', 'tiktok-reel-post', 'multi-platform-product-description', 'long-to-short-post', 'thirty-day-content-plan', 'poster-thumbnail-brief', 'social-ad-creative-brief']);
+const realImageEndpoints = Object.freeze({ 'product-photo': '/api/product-photo', 'world-checkin': '/api/world-checkin', 'premium-portrait-enhancer': '/api/premium-portrait-enhancer', 'virtual-tryon': '/api/virtual-tryon' });
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const t = (path) => path.split('.').reduce((value, key) => value?.[key], window.AIOS_TRANSLATIONS[state.lang]);
@@ -31,11 +33,13 @@ function renderFaq() { $('#faq-list').innerHTML = t('faq.items').map((item, i) =
 function openSkill(id) {
   const skill = window.AIOS_SKILLS.find(item => item.id === id); if (!skill) return;
   state.activeSkill = skill; $('#modal-category').textContent = t(`skills.${skill.category}`); $('#modal-title').textContent = state.lang === 'vi' ? skill.titleVi : skill.titleEn; $('#modal-benefit').textContent = state.lang === 'vi' ? skill.benefitVi : skill.benefitEn;
-  const imageFields = `<label class="upload-box"><input name="image" type="file" accept="image/png,image/jpeg,image/webp" ${skill.product || skill.id === 'world-checkin' ? 'required' : ''}><span class="upload-icon">↑</span><b>${t('launcher.upload')}</b><small>${t('launcher.uploadHint')}</small></label><label>${t('launcher.preset')}<select name="preset"><option>${state.lang === 'vi' ? 'Tự nhiên' : 'Natural'}</option><option>${state.lang === 'vi' ? 'Chuyên nghiệp' : 'Professional'}</option><option>${state.lang === 'vi' ? 'Điện ảnh' : 'Cinematic'}</option><option>${state.lang === 'vi' ? 'Theo yêu cầu' : 'Custom'}</option></select></label><label>${t('launcher.extra')}<textarea name="instruction" placeholder="${t('launcher.extraPlaceholder')}"></textarea></label>`;
-  const textFields = `<label>${t('launcher.mainInput')}<textarea required placeholder="${t('launcher.mainPlaceholder')}"></textarea></label><label>${t('launcher.context')}<input type="text" placeholder="${t('launcher.contextPlaceholder')}"></label>`;
+  const imageOptionsFields = `<label>${t('launcher.preset')}<select name="preset"><option>${state.lang === 'vi' ? 'Tự nhiên' : 'Natural'}</option><option>${state.lang === 'vi' ? 'Chuyên nghiệp' : 'Professional'}</option><option>${state.lang === 'vi' ? 'Điện ảnh' : 'Cinematic'}</option><option>${state.lang === 'vi' ? 'Theo yêu cầu' : 'Custom'}</option></select></label><label>${t('launcher.extra')}<textarea name="instruction" placeholder="${t('launcher.extraPlaceholder')}"></textarea></label>`;
+  const imageFields = `<label class="upload-box"><input name="image" type="file" accept="image/png,image/jpeg,image/webp" ${skill.product || ['world-checkin', 'premium-portrait-enhancer'].includes(skill.id) ? 'required' : ''}><span class="upload-icon">↑</span><b>${t('launcher.upload')}</b><small>${t('launcher.uploadHint')}</small></label>${imageOptionsFields}`;
+  const virtualTryonFields = `<label class="upload-box"><input name="personImage" type="file" accept="image/png,image/jpeg,image/webp" required><span class="upload-icon">↑</span><b>${state.lang === 'vi' ? 'Ảnh người' : 'Person image'}</b><small>${t('launcher.uploadHint')}</small></label><label class="upload-box"><input name="garmentImage" type="file" accept="image/png,image/jpeg,image/webp" required><span class="upload-icon">↑</span><b>${state.lang === 'vi' ? 'Ảnh trang phục' : 'Garment image'}</b><small>${t('launcher.uploadHint')}</small></label>${imageOptionsFields}`;
+  const textFields = `<label>${t('launcher.mainInput')}<textarea name="input" required placeholder="${t('launcher.mainPlaceholder')}"></textarea></label><label>${t('launcher.context')}<input name="context" type="text" placeholder="${t('launcher.contextPlaceholder')}"></label>`;
   const productFields = `<div class="field-row"><label>${t('launcher.variations')}<select name="variations"><option>1</option><option>3</option><option>5</option><option>8</option></select></label><label>${t('launcher.scene')}<select name="scene"><option>Studio</option><option>Lifestyle</option><option>Quảng cáo</option><option>Cận cảnh</option><option>Theo yêu cầu</option></select></label></div><div class="field-row"><label>${t('launcher.angle')}<select name="angle"><option>Góc 45°</option><option>Chính diện</option><option>Từ trên xuống</option><option>Cận cảnh</option><option>Theo yêu cầu</option></select></label><label>${t('launcher.use')}<input name="intendedUse" placeholder="${t('launcher.usePlaceholder')}"></label></div>`;
   const worldCheckinFields = `<label>${t('launcher.destination')}<input name="destination" required placeholder="${t('launcher.destinationPlaceholder')}"></label>`;
-  $('#skill-fields').innerHTML = skill.type === 'image' ? imageFields + (skill.product ? productFields : skill.id === 'world-checkin' ? worldCheckinFields : '') : textFields;
+  $('#skill-fields').innerHTML = skill.id === 'virtual-tryon' ? virtualTryonFields : skill.type === 'image' ? imageFields + (skill.product ? productFields : skill.id === 'world-checkin' ? worldCheckinFields : '') : textFields;
   $('#result-box').className = 'result-box'; $('#result-box').innerHTML = `<span class="result-icon">◎</span><b>${t('launcher.resultTitle')}</b><p>${t('launcher.resultText')}</p>`;
   $('#skill-modal').classList.add('open'); $('#skill-modal').setAttribute('aria-hidden','false'); document.body.classList.add('modal-open'); $('.modal-close').focus();
 }
@@ -56,11 +60,28 @@ $('#language').addEventListener('change', event => { if (!['vi','en'].includes(e
 $('.menu-toggle').addEventListener('click', event => { const open = $('.nav-links').classList.toggle('open'); event.currentTarget.setAttribute('aria-expanded', String(open)); });
 $('#skill-form').addEventListener('submit', async event => {
   event.preventDefault(); const box = $('#result-box'); box.className = 'result-box loading'; box.innerHTML = `<span class="result-icon">◌</span><b>${t('launcher.working')}</b>`;
-  if (!['product-photo', 'world-checkin'].includes(state.activeSkill?.id)) return setTimeout(() => { box.className = 'result-box success'; box.innerHTML = `<span class="result-icon">✓</span><b>${t('launcher.ready')}</b><p>${t('launcher.readyText')}</p>`; }, 700);
-  const formData = new FormData(event.currentTarget); const image = formData.get('image');
-  if (!(image instanceof File) || !image.size) { box.className = 'result-box error'; box.innerHTML = `<span class="result-icon">!</span><b>${t(state.activeSkill.id === 'world-checkin' ? 'launcher.referenceRequired' : 'launcher.imageRequired')}</b>`; return; }
+  if (realTextSkills.has(state.activeSkill?.id)) {
+    const formData = new FormData(event.currentTarget); const primaryInput = String(formData.get('input') || '').trim(); const context = String(formData.get('context') || '').trim();
+    if (!primaryInput) { box.className = 'result-box error'; box.replaceChildren(); const message = document.createElement('b'); message.textContent = state.lang === 'vi' ? 'Vui lòng nhập nội dung.' : 'Please enter your content.'; box.append(message); return; }
+    const input = context ? `${primaryInput}\n\n${state.lang === 'vi' ? 'Bối cảnh bổ sung' : 'Additional context'}:\n${context}` : primaryInput;
+    try {
+      const response = await fetch('/api/text-skill', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ skillId: state.activeSkill.id, input, language: state.lang }) }); const payload = await response.json();
+      if (!response.ok || !payload.success || typeof payload.output !== 'string' || !payload.output.trim()) throw new Error('Generation failed');
+      box.className = 'result-box success'; box.replaceChildren(); const output = document.createElement('div'); output.textContent = payload.output; output.style.cssText = 'width:100%;white-space:pre-wrap;text-align:left;font-size:13px'; box.append(output);
+    } catch { box.className = 'result-box error'; box.innerHTML = `<span class="result-icon">!</span><b>${t('launcher.generationError')}</b><p>${t('launcher.tryAgain')}</p>`; }
+    return;
+  }
+  const endpoint = realImageEndpoints[state.activeSkill?.id];
+  if (!endpoint) return setTimeout(() => { box.className = 'result-box success'; box.innerHTML = `<span class="result-icon">✓</span><b>${t('launcher.ready')}</b><p>${t('launcher.readyText')}</p>`; }, 700);
+  const formData = new FormData(event.currentTarget);
+  if (state.activeSkill.id === 'virtual-tryon') {
+    const personImage = formData.get('personImage'); const garmentImage = formData.get('garmentImage');
+    if (!(personImage instanceof File) || !personImage.size || !(garmentImage instanceof File) || !garmentImage.size) { box.className = 'result-box error'; box.innerHTML = `<span class="result-icon">!</span><b>${state.lang === 'vi' ? 'Vui lòng tải lên cả ảnh người và ảnh trang phục.' : 'Please upload both a person image and a garment image.'}</b>`; return; }
+  } else {
+    const image = formData.get('image');
+    if (!(image instanceof File) || !image.size) { box.className = 'result-box error'; box.innerHTML = `<span class="result-icon">!</span><b>${t(state.activeSkill.id === 'world-checkin' ? 'launcher.referenceRequired' : 'launcher.imageRequired')}</b>`; return; }
+  }
   try {
-    const endpoint = state.activeSkill.id === 'world-checkin' ? '/api/world-checkin' : '/api/product-photo';
     const response = await fetch(endpoint, { method: 'POST', body: formData }); const payload = await response.json();
     if (!response.ok || !payload.success || !Array.isArray(payload.images) || !payload.images.length) throw new Error('Generation failed');
     renderProductImages(box, payload.images, state.activeSkill.id === 'world-checkin' ? 'launcher.worldGeneratedAlt' : 'launcher.generatedAlt');
