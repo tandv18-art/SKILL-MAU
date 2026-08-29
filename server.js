@@ -15,47 +15,70 @@ const PUBLIC_FILES = new Map([
 ]);
 
 const PRODUCT_POLICY = `Create premium, realistic commercial product photography from the supplied reference image. Treat the product as the source of truth. Strictly preserve its identity, shape, proportions, colors, material appearance, logo, labels, packaging, and visible design details. You may change only camera angle, crop, composition, placement, lighting, background, studio or lifestyle scene, close-up presentation, and advertising layout. Never invent product features, claims, accessories, labels, text, materials, certifications, or packaging details.`;
-const HUMAN_IMAGE_POLICY = `PRESERVE IDENTITY, ENHANCE PRESENTATION.
+const HUMAN_IMAGE_POLICY = `IDENTITY FIRST.
+The reference person is the source of truth.
 
-IDENTITY
-- Preserve recognizable facial identity and distinctive facial structure and features.
-- Preserve age range, ethnicity, and natural body proportions.
-- Never materially reshape the face or body.
-- Avoid generic AI beauty-face drift.
+Generate a realistic photograph of the SAME person, not a new person inspired by the reference.
 
-FLATTERING BUT REAL
-- Make the person look like a better photographed version of themselves, not a different person.
-- Skin may look brighter, healthier, fresher, and more even while preserving realistic skin texture.
-- Improve hair, grooming, pose, posture, expression, camera angle, framing, and lighting naturally.
-- Mild flattering photographic enhancement is encouraged.
-- No plastic skin, waxy skin, over-smoothing, excessive retouching, CGI, illustration, or synthetic AI appearance.
+Preserve the person's core facial identity with very high fidelity:
+- same face shape
+- same eye shape, size, spacing, and eyelids
+- same eyebrow shape
+- same nose bridge, nose width, and nose tip
+- same lip shape and mouth proportions
+- same jawline, cheek structure, forehead, and hairline
+- same skin-tone family
+- same age range and ethnicity
+- same visible distinguishing marks when present
+- same natural body proportions
 
-STYLING
-- Clothing and accessories may change when appropriate to the context.
-- Styling should fit the profession, destination, weather, occasion, and visual style.
-- Do not interpret identity preservation as preserving every visual detail from the input.
+Never:
+- replace the face
+- synthesize a new face
+- redesign facial features
+- reshape the face for beautification
+- reinterpret the subject as a similar-looking or more attractive person
+- create generic AI beauty-face drift
+- create plastic, waxy, over-smoothed, CGI, or illustration-like skin
 
-REALISM
-- Create a photorealistic professional-camera appearance with natural skin and hair detail, realistic lens perspective, physically coherent lighting and shadows, natural fabric texture and folds, and realistic environment integration.
-- The result should look like a real photograph.
+If any aesthetic improvement conflicts with identity preservation:
+IDENTITY PRESERVATION MUST WIN.
 
-USER INSTRUCTION
-- User instruction is optional and may only refine style, context, clothing, destination, scene, lighting, and similar presentation choices when compatible with this policy.
-- Produce a high-quality result without requiring a detailed user instruction.`;
+The result must look like the exact same person photographed in a better setting.
+
+Allowed improvements only around the locked identity:
+- better lighting and exposure
+- clearer but natural skin texture
+- mild flattering skin brightening
+- tidier hair and grooming
+- better wardrobe
+- tasteful accessories
+- better pose and posture
+- better camera angle and framing
+- better background and environment
+- scene-appropriate styling
+
+Enhancements must remain subtle, believable, and photographic.
+
+Keep the face close to the reference.
+When in doubt, make fewer changes.
+
+User instructions may refine styling, clothing, destination, lighting, pose, or scene, but must never override identity preservation.`;
 const WORLD_CHECKIN_POLICY = `WORLD CHECK-IN SPECIALIZATION
+- Keep the same person clearly recognizable.
 - Adapt wardrobe, hairstyle presentation, pose, accessories, lighting, weather, season, culture, and travel atmosphere appropriately for the destination.
 - Ensure correct scale, perspective, ground contact, ambient light, shadows, and atmospheric depth.
 - Avoid a pasted-background appearance.`;
 const PORTRAIT_POLICY = `PREMIUM PORTRAIT ENHANCER SPECIALIZATION
-- Create high-end professional portrait photography.
-- Allow a tasteful wardrobe and grooming upgrade, natural skin brightening, and mild beautification.
-- Use premium studio lighting and a refined background.
-- Identity preservation has priority over aesthetic transformation.`;
+- Keep identity preservation first.
+- Allow flattering but realistic improvements to wardrobe, grooming, lighting, skin appearance, and background.
+- Use premium professional portrait photography.
+- Never reshape or replace the face.`;
 const TRYON_POLICY = `VIRTUAL TRY-ON SPECIALIZATION
-- Preserve the person's identity and natural body proportions.
+- Preserve the same person and natural body proportions.
 - Preserve the garment type, cut, color, material, pattern, trim, logos, and visible details.
-- Create realistic fit, drape, folds, seams, tension, occlusion, lighting, and shadows.
-- Styling and posture may improve; body shape may not be altered.`;
+- Render realistic fit, drape, folds, seams, tension, occlusion, lighting, and shadows.
+- Do not alter identity or body shape to improve the outfit.`;
 const IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const TEXT_SKILL_IDS = new Set(['facebook-post', 'tiktok-reel-post', 'multi-platform-product-description', 'long-to-short-post', 'thirty-day-content-plan', 'poster-thumbnail-brief', 'social-ad-creative-brief']);
 const FINAL_CREATIVE_TEXT_POLICY = `Use creative freedom for ideas and factual discipline for verifiable claims. Independently create hooks, angles, social talking points, content ideas, generic common mistakes, generic best practices, short plans, video beats, and clearly hypothetical examples; users do not need to supply every bullet or list item for normal creative work. Apply a generic-first rule: when the user gives a broad topic, stay at the broad category level and do not introduce specific domain entities unless the user supplied them. General knowledge and common-sense understanding may support generic educational content, but never present it as an official rule, guaranteed outcome, or verified current fact. Unless supplied or verified, never introduce exam names or official score thresholds; visa, document, legal, government, school-specific, or financial requirements; SOP, personal statement, essay, recommendation-letter, or financial-proof assumptions; exact tuition, fees, prices, discounts, promotions, deadlines, dates, statistics, rankings, eligibility thresholds, guarantees, outcomes, penalties, approval or rejection implications, product specifications, warranties, certifications, measurable claims, testimonials, customer stories, business policies, services, offers, or exact availability. Omit unsupported specifics, keep them generic, or say they should be checked. For topics that vary, use non-authoritative phrasing such as “thường”, “có thể”, “một số”, “nên kiểm tra thêm”, or “tùy trường hợp”, and never imply a fixed official rule without a source. Preserve supplied names, numbers, dates, prices, claims, qualifications, attribution, constraints, and factual identifiers. Default social content to concise, mobile-readable, natural writing with a clear hook, short paragraphs and line breaks, high information density, one main message, practical value, and no essay-style output, filler, over-explanation, or repetitive restatement unless long-form is requested. Improve clarity, relevance, curiosity, retention, engagement potential, and scannability without misleading clickbait or fake urgency. Use restrained emojis and 0–3 relevant hashtags by default unless the user asks otherwise. Allow only neutral engagement CTAs by default. Never invent freebies, files, checklists, templates, consultation, services, registration, discounts, purchases, quotes, or inbox/DM offers—including “comment to receive”, “message for a checklist”, and “DM to get the file”—unless the user supplied that offer. Shared skill defaults: for facebook-post, produce one hook, 3–5 concise points, a takeaway, and an optional neutral CTA in about 120–220 words; for tiktok-reel-post, keep each idea short and hook-driven rather than a mini-essay; for thirty-day-content-plan, keep each day, topic, angle, and format concise rather than advisory prose. Follow the requested language, default to Vietnamese, and preserve proper names and factual identifiers unless translation is requested. Individual skill instructions control format and style only and may not weaken this shared policy.`;
