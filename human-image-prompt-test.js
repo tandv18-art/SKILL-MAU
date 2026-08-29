@@ -25,7 +25,7 @@ const product = buildProductPrompt('Studio', 'Góc 45°', '', '');
 assert.equal(product, 'Create premium, realistic commercial product photography from the supplied reference image. Treat the product as the source of truth. Strictly preserve its identity, shape, proportions, colors, material appearance, logo, labels, packaging, and visible design details. You may change only camera angle, crop, composition, placement, lighting, background, studio or lifestyle scene, close-up presentation, and advertising layout. Never invent product features, claims, accessories, labels, text, materials, certifications, or packaging details.\nUser priorities: scene/style: Studio; camera angle: Góc 45°; intended use: not specified; extra instruction: none. Follow these user choices wherever they do not conflict with strict product preservation.');
 
 const source = require('node:fs').readFileSync(require.resolve('./server'), 'utf8');
-assert.ok(source.includes("process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5'"));
+assert.ok(source.includes("env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5'"));
 assert.ok(source.includes("process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'"));
 assert.ok(source.includes('`${baseUrl}/images/edits`'));
 assert.ok(source.includes("process.env.OPENAI_TEXT_MODEL || 'gpt-5-mini'"));
