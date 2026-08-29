@@ -27,6 +27,24 @@ const buildProductPrompt = (scene, angle, intendedUse, instruction) => `${PRODUC
 const buildWorldCheckinPrompt = (destination, preset, instruction) => `${WORLD_CHECKIN_POLICY}\nDestination: ${destination}; preset: ${preset || 'natural'}; extra instruction: ${instruction || 'none'}.`;
 const buildPortraitPrompt = (preset, instruction) => `${PORTRAIT_POLICY}\nPreset: ${preset}; user instruction: ${instruction || 'none'}.`;
 const buildTryonPrompt = instruction => `${TRYON_POLICY}\nUser instruction: ${instruction || 'none'}.`;
+const resolveImageModel = (env = process.env) => env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5';
+
+function createImageEditForm({ images, prompt, n, size, highInputFidelity = false }, env = process.env) {
+  const providerForm = new FormData();
+  providerForm.set('model', resolveImageModel(env));
+  for (const { field, image, fallbackName } of images) providerForm.append(field, image, image.name || fallbackName);
+  providerForm.set('prompt', prompt);
+  providerForm.set('n', String(n));
+  providerForm.set('size', size);
+  providerForm.set('quality', 'high');
+  if (highInputFidelity) providerForm.set('input_fidelity', 'high');
+  return providerForm;
+}
+
+const createProductImageEditForm = (image, prompt, variations, env) => createImageEditForm({ images: [{ field: 'image', image, fallbackName: 'product.png' }], prompt, n: variations, size: '1536x1024' }, env);
+const createWorldImageEditForm = (image, prompt, env) => createImageEditForm({ images: [{ field: 'image', image, fallbackName: 'reference.png' }], prompt, n: 1, size: '1536x1024', highInputFidelity: true }, env);
+const createPortraitImageEditForm = (image, prompt, env) => createImageEditForm({ images: [{ field: 'image', image, fallbackName: 'portrait.png' }], prompt, n: 1, size: '1024x1536', highInputFidelity: true }, env);
+const createTryonImageEditForm = (person, garment, prompt, env) => createImageEditForm({ images: [{ field: 'image[]', image: person, fallbackName: 'person.png' }, { field: 'image[]', image: garment, fallbackName: 'garment.png' }], prompt, n: 1, size: '1024x1536', highInputFidelity: true }, env);
 
 function needsAuthoritativeFacts(input) {
   const creativeIntent = /(?:viết|tạo|lên|lập|gợi ý|cho (?:tôi|mình)|rút|tóm tắt|chuyển|rewrite|create|write|generate|ideas?|caption|hook|script|post|content plan|creative brief).{0,45}(?:bài|post|caption|hook|kịch bản|script|ý tưởng|nội dung|content|kế hoạch|plan|brief|quảng cáo|tiktok|reel|facebook)/is.test(input);
@@ -70,13 +88,7 @@ async function generateProductPhotos(req, res) {
   const instruction = String(form.get('instruction') || '').slice(0, 2000);
   const prompt = buildProductPrompt(scene, angle, intendedUse, instruction);
 
-  const providerForm = new FormData();
-  providerForm.set('model', process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5');
-  providerForm.set('image', image, image.name || 'product.png');
-  providerForm.set('prompt', prompt);
-  providerForm.set('n', String(variations));
-  providerForm.set('size', '1536x1024');
-  providerForm.set('quality', 'high');
+  const providerForm = createProductImageEditForm(image, prompt, variations);
 
   const baseUrl = (process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1').replace(/\/$/, '');
   const response = await fetch(`${baseUrl}/images/edits`, { method: 'POST', headers: { authorization: `Bearer ${process.env.OPENAI_API_KEY}` }, body: providerForm });
@@ -101,13 +113,7 @@ async function generateWorldCheckin(req, res) {
   const instruction = String(form.get('instruction') || '').slice(0, 2000);
   const prompt = buildWorldCheckinPrompt(destination, preset, instruction);
 
-  const providerForm = new FormData();
-  providerForm.set('model', process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5');
-  providerForm.set('image', image, image.name || 'reference.png');
-  providerForm.set('prompt', prompt);
-  providerForm.set('n', '1');
-  providerForm.set('size', '1536x1024');
-  providerForm.set('quality', 'high');
+  const providerForm = createWorldImageEditForm(image, prompt);
 
   const baseUrl = (process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1').replace(/\/$/, '');
   const response = await fetch(`${baseUrl}/images/edits`, { method: 'POST', headers: { authorization: `Bearer ${process.env.OPENAI_API_KEY}` }, body: providerForm });
@@ -125,7 +131,7 @@ async function generatePortrait(req, res) {
   if (!(image instanceof Blob) || !image.size) return json(res, 400, { success: false, error: 'A portrait image is required.' });
   if (!IMAGE_TYPES.has(image.type)) return json(res, 415, { success: false, error: 'Unsupported image format.' });
   const preset = String(form.get('preset') || 'natural').slice(0, 200); const instruction = String(form.get('instruction') || '').slice(0, 2000);
-  const providerForm = new FormData(); providerForm.set('model', process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5'); providerForm.set('image', image, image.name || 'portrait.png'); providerForm.set('prompt', buildPortraitPrompt(preset, instruction)); providerForm.set('n', '1'); providerForm.set('size', '1024x1536'); providerForm.set('quality', 'high');
+  const providerForm = createPortraitImageEditForm(image, buildPortraitPrompt(preset, instruction));
   const payload = await callImageProvider(providerForm, 'Portrait provider rejected the request.'); return json(res, 200, { success: true, images: payload });
 }
 
@@ -135,7 +141,7 @@ async function generateTryon(req, res) {
   const form = await readForm(req); const person = form.get('personImage'); const garment = form.get('garmentImage');
   if (!(person instanceof Blob) || !person.size || !(garment instanceof Blob) || !garment.size) return json(res, 400, { success: false, error: 'Both person and garment images are required.' });
   if (!IMAGE_TYPES.has(person.type) || !IMAGE_TYPES.has(garment.type)) return json(res, 415, { success: false, error: 'Unsupported image format.' });
-  const instruction = String(form.get('instruction') || '').slice(0, 2000); const providerForm = new FormData(); providerForm.set('model', process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5'); providerForm.append('image[]', person, person.name || 'person.png'); providerForm.append('image[]', garment, garment.name || 'garment.png'); providerForm.set('prompt', buildTryonPrompt(instruction)); providerForm.set('n', '1'); providerForm.set('size', '1024x1536'); providerForm.set('quality', 'high');
+  const instruction = String(form.get('instruction') || '').slice(0, 2000); const providerForm = createTryonImageEditForm(person, garment, buildTryonPrompt(instruction));
   const payload = await callImageProvider(providerForm, 'The image provider rejected multi-image try-on.'); return json(res, 200, { success: true, images: payload });
 }
 
@@ -179,4 +185,4 @@ const server = http.createServer(async (req, res) => {
 
 if (require.main === module) server.listen(PORT, () => console.log(`AIOS Lab running at http://localhost:${PORT}`));
 
-module.exports = { buildProductPrompt, buildWorldCheckinPrompt, buildPortraitPrompt, buildTryonPrompt };
+module.exports = { server, readForm, callImageProvider, resolveImageModel, createProductImageEditForm, createWorldImageEditForm, createPortraitImageEditForm, createTryonImageEditForm, buildProductPrompt, buildWorldCheckinPrompt, buildPortraitPrompt, buildTryonPrompt };
