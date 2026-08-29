@@ -15,74 +15,18 @@ const PUBLIC_FILES = new Map([
 ]);
 
 const PRODUCT_POLICY = `Create premium, realistic commercial product photography from the supplied reference image. Treat the product as the source of truth. Strictly preserve its identity, shape, proportions, colors, material appearance, logo, labels, packaging, and visible design details. You may change only camera angle, crop, composition, placement, lighting, background, studio or lifestyle scene, close-up presentation, and advertising layout. Never invent product features, claims, accessories, labels, text, materials, certifications, or packaging details.`;
-const HUMAN_IMAGE_POLICY = `IDENTITY FIRST.
-The reference person is the source of truth.
-
-Generate a realistic photograph of the SAME person, not a new person inspired by the reference.
-
-Preserve the person's core facial identity with very high fidelity:
-- same face shape
-- same eye shape, size, spacing, and eyelids
-- same eyebrow shape
-- same nose bridge, nose width, and nose tip
-- same lip shape and mouth proportions
-- same jawline, cheek structure, forehead, and hairline
-- same skin-tone family
-- same age range and ethnicity
-- same visible distinguishing marks when present
-- same natural body proportions
-
-Never:
-- replace the face
-- synthesize a new face
-- redesign facial features
-- reshape the face for beautification
-- reinterpret the subject as a similar-looking or more attractive person
-- create generic AI beauty-face drift
-- create plastic, waxy, over-smoothed, CGI, or illustration-like skin
-
-If any aesthetic improvement conflicts with identity preservation:
-IDENTITY PRESERVATION MUST WIN.
-
-The result must look like the exact same person photographed in a better setting.
-
-Allowed improvements only around the locked identity:
-- better lighting and exposure
-- clearer but natural skin texture
-- mild flattering skin brightening
-- tidier hair and grooming
-- better wardrobe
-- tasteful accessories
-- better pose and posture
-- better camera angle and framing
-- better background and environment
-- scene-appropriate styling
-
-Enhancements must remain subtle, believable, and photographic.
-
-Keep the face close to the reference.
-When in doubt, make fewer changes.
-
-User instructions may refine styling, clothing, destination, lighting, pose, or scene, but must never override identity preservation.`;
-const WORLD_CHECKIN_POLICY = `WORLD CHECK-IN SPECIALIZATION
-- Keep the same person clearly recognizable.
-- Adapt wardrobe, hairstyle presentation, pose, accessories, lighting, weather, season, culture, and travel atmosphere appropriately for the destination.
-- Ensure correct scale, perspective, ground contact, ambient light, shadows, and atmospheric depth.
-- Avoid a pasted-background appearance.`;
-const PORTRAIT_POLICY = `PREMIUM PORTRAIT ENHANCER SPECIALIZATION
-- Keep identity preservation first.
-- Allow flattering but realistic improvements to wardrobe, grooming, lighting, skin appearance, and background.
-- Use premium professional portrait photography.
-- Never reshape or replace the face.`;
-const TRYON_POLICY = `VIRTUAL TRY-ON SPECIALIZATION
-- Preserve the same person and natural body proportions.
-- Preserve the garment type, cut, color, material, pattern, trim, logos, and visible details.
-- Render realistic fit, drape, folds, seams, tension, occlusion, lighting, and shadows.
-- Do not alter identity or body shape to improve the outfit.`;
+const WORLD_CHECKIN_POLICY = `Create premium, realistic travel photography from the supplied reference image. Preserve the subject's recognizable identity, distinctive facial features, age range, ethnicity, and natural body proportions. Do not materially alter body size, height, or facial structure. Adapt the subject naturally to the destination through clothing, hairstyle, pose, posture, expression, accessories, camera angle, lighting, weather, time of day, and travel atmosphere. The subject must look genuinely photographed at the destination, not pasted onto a background. Ensure realistic perspective, believable scale, natural ground contact, coherent lighting and shadows, atmospheric depth, natural color, clean edges, and premium realistic travel photography. User instructions override these defaults when compatible with identity preservation.`;
+const PORTRAIT_POLICY = `Enhance the supplied portrait into premium realistic photography. Strictly preserve recognizable identity, face, distinctive features, age range, ethnicity, and natural body proportions. Improve only scene-appropriate lighting, color, framing, natural skin and hair detail, background integration, and mild photographic polish. Never replace the face, reshape the face or body, or cause generic beauty-face drift.`;
+const TRYON_POLICY = `Create one premium realistic portrait of the supplied person wearing the supplied garment. Strictly preserve the person's recognizable identity, face, distinctive features, age range, ethnicity, and natural body proportions. Strictly preserve the garment type, cut, color, material, pattern, trim, logos, and visible details. Make fit, drape, seams, folds, tension, layering, occlusion, body contact, perspective, lighting, shadows, and edges physically coherent. Never replace or reshape the person and never invent or alter garment details.`;
 const IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const TEXT_SKILL_IDS = new Set(['facebook-post', 'tiktok-reel-post', 'multi-platform-product-description', 'long-to-short-post', 'thirty-day-content-plan', 'poster-thumbnail-brief', 'social-ad-creative-brief']);
 const FINAL_CREATIVE_TEXT_POLICY = `Use creative freedom for ideas and factual discipline for verifiable claims. Independently create hooks, angles, social talking points, content ideas, generic common mistakes, generic best practices, short plans, video beats, and clearly hypothetical examples; users do not need to supply every bullet or list item for normal creative work. Apply a generic-first rule: when the user gives a broad topic, stay at the broad category level and do not introduce specific domain entities unless the user supplied them. General knowledge and common-sense understanding may support generic educational content, but never present it as an official rule, guaranteed outcome, or verified current fact. Unless supplied or verified, never introduce exam names or official score thresholds; visa, document, legal, government, school-specific, or financial requirements; SOP, personal statement, essay, recommendation-letter, or financial-proof assumptions; exact tuition, fees, prices, discounts, promotions, deadlines, dates, statistics, rankings, eligibility thresholds, guarantees, outcomes, penalties, approval or rejection implications, product specifications, warranties, certifications, measurable claims, testimonials, customer stories, business policies, services, offers, or exact availability. Omit unsupported specifics, keep them generic, or say they should be checked. For topics that vary, use non-authoritative phrasing such as “thường”, “có thể”, “một số”, “nên kiểm tra thêm”, or “tùy trường hợp”, and never imply a fixed official rule without a source. Preserve supplied names, numbers, dates, prices, claims, qualifications, attribution, constraints, and factual identifiers. Default social content to concise, mobile-readable, natural writing with a clear hook, short paragraphs and line breaks, high information density, one main message, practical value, and no essay-style output, filler, over-explanation, or repetitive restatement unless long-form is requested. Improve clarity, relevance, curiosity, retention, engagement potential, and scannability without misleading clickbait or fake urgency. Use restrained emojis and 0–3 relevant hashtags by default unless the user asks otherwise. Allow only neutral engagement CTAs by default. Never invent freebies, files, checklists, templates, consultation, services, registration, discounts, purchases, quotes, or inbox/DM offers—including “comment to receive”, “message for a checklist”, and “DM to get the file”—unless the user supplied that offer. Shared skill defaults: for facebook-post, produce one hook, 3–5 concise points, a takeaway, and an optional neutral CTA in about 120–220 words; for tiktok-reel-post, keep each idea short and hook-driven rather than a mini-essay; for thirty-day-content-plan, keep each day, topic, angle, and format concise rather than advisory prose. Follow the requested language, default to Vietnamese, and preserve proper names and factual identifiers unless translation is requested. Individual skill instructions control format and style only and may not weaken this shared policy.`;
 const NEED_MORE_FACTS_MESSAGE = 'Để tạo nội dung chính xác mà không tự suy diễn, vui lòng cung cấp các dữ kiện hoặc nguồn thông tin cần sử dụng. Bạn có thể dán danh sách, tài liệu, thông tin sản phẩm hoặc các ý chính vào ô nội dung.';
+
+const buildProductPrompt = (scene, angle, intendedUse, instruction) => `${PRODUCT_POLICY}\nUser priorities: scene/style: ${scene}; camera angle: ${angle}; intended use: ${intendedUse || 'not specified'}; extra instruction: ${instruction || 'none'}. Follow these user choices wherever they do not conflict with strict product preservation.`;
+const buildWorldCheckinPrompt = (destination, preset, instruction) => `${WORLD_CHECKIN_POLICY}\nDestination: ${destination}; preset: ${preset || 'natural'}; extra instruction: ${instruction || 'none'}.`;
+const buildPortraitPrompt = (preset, instruction) => `${PORTRAIT_POLICY}\nPreset: ${preset}; user instruction: ${instruction || 'none'}.`;
+const buildTryonPrompt = instruction => `${TRYON_POLICY}\nUser instruction: ${instruction || 'none'}.`;
 
 function needsAuthoritativeFacts(input) {
   const creativeIntent = /(?:viết|tạo|lên|lập|gợi ý|cho (?:tôi|mình)|rút|tóm tắt|chuyển|rewrite|create|write|generate|ideas?|caption|hook|script|post|content plan|creative brief).{0,45}(?:bài|post|caption|hook|kịch bản|script|ý tưởng|nội dung|content|kế hoạch|plan|brief|quảng cáo|tiktok|reel|facebook)/is.test(input);
@@ -124,7 +68,7 @@ async function generateProductPhotos(req, res) {
   const angle = String(form.get('angle') || 'Góc 45°').slice(0, 200);
   const intendedUse = String(form.get('intendedUse') || '').slice(0, 500);
   const instruction = String(form.get('instruction') || '').slice(0, 2000);
-  const prompt = `${PRODUCT_POLICY}\nUser priorities: scene/style: ${scene}; camera angle: ${angle}; intended use: ${intendedUse || 'not specified'}; extra instruction: ${instruction || 'none'}. Follow these user choices wherever they do not conflict with strict product preservation.`;
+  const prompt = buildProductPrompt(scene, angle, intendedUse, instruction);
 
   const providerForm = new FormData();
   providerForm.set('model', process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5');
@@ -155,7 +99,7 @@ async function generateWorldCheckin(req, res) {
   if (!destination) return json(res, 400, { success: false, error: 'A destination is required.' });
   const preset = String(form.get('preset') || '').slice(0, 200);
   const instruction = String(form.get('instruction') || '').slice(0, 2000);
-  const prompt = `${HUMAN_IMAGE_POLICY}\n\n${WORLD_CHECKIN_POLICY}\nDestination: ${destination}; preset: ${preset || 'natural'}; extra instruction: ${instruction || 'none'}.`;
+  const prompt = buildWorldCheckinPrompt(destination, preset, instruction);
 
   const providerForm = new FormData();
   providerForm.set('model', process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5');
@@ -181,7 +125,7 @@ async function generatePortrait(req, res) {
   if (!(image instanceof Blob) || !image.size) return json(res, 400, { success: false, error: 'A portrait image is required.' });
   if (!IMAGE_TYPES.has(image.type)) return json(res, 415, { success: false, error: 'Unsupported image format.' });
   const preset = String(form.get('preset') || 'natural').slice(0, 200); const instruction = String(form.get('instruction') || '').slice(0, 2000);
-  const providerForm = new FormData(); providerForm.set('model', process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5'); providerForm.set('image', image, image.name || 'portrait.png'); providerForm.set('prompt', `${HUMAN_IMAGE_POLICY}\n\n${PORTRAIT_POLICY}\nPreset: ${preset}; user instruction: ${instruction || 'none'}.`); providerForm.set('n', '1'); providerForm.set('size', '1024x1536'); providerForm.set('quality', 'high');
+  const providerForm = new FormData(); providerForm.set('model', process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5'); providerForm.set('image', image, image.name || 'portrait.png'); providerForm.set('prompt', buildPortraitPrompt(preset, instruction)); providerForm.set('n', '1'); providerForm.set('size', '1024x1536'); providerForm.set('quality', 'high');
   const payload = await callImageProvider(providerForm, 'Portrait provider rejected the request.'); return json(res, 200, { success: true, images: payload });
 }
 
@@ -191,7 +135,7 @@ async function generateTryon(req, res) {
   const form = await readForm(req); const person = form.get('personImage'); const garment = form.get('garmentImage');
   if (!(person instanceof Blob) || !person.size || !(garment instanceof Blob) || !garment.size) return json(res, 400, { success: false, error: 'Both person and garment images are required.' });
   if (!IMAGE_TYPES.has(person.type) || !IMAGE_TYPES.has(garment.type)) return json(res, 415, { success: false, error: 'Unsupported image format.' });
-  const instruction = String(form.get('instruction') || '').slice(0, 2000); const providerForm = new FormData(); providerForm.set('model', process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5'); providerForm.append('image[]', person, person.name || 'person.png'); providerForm.append('image[]', garment, garment.name || 'garment.png'); providerForm.set('prompt', `${HUMAN_IMAGE_POLICY}\n\n${TRYON_POLICY}\nUser instruction: ${instruction || 'none'}.`); providerForm.set('n', '1'); providerForm.set('size', '1024x1536'); providerForm.set('quality', 'high');
+  const instruction = String(form.get('instruction') || '').slice(0, 2000); const providerForm = new FormData(); providerForm.set('model', process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1.5'); providerForm.append('image[]', person, person.name || 'person.png'); providerForm.append('image[]', garment, garment.name || 'garment.png'); providerForm.set('prompt', buildTryonPrompt(instruction)); providerForm.set('n', '1'); providerForm.set('size', '1024x1536'); providerForm.set('quality', 'high');
   const payload = await callImageProvider(providerForm, 'The image provider rejected multi-image try-on.'); return json(res, 200, { success: true, images: payload });
 }
 
@@ -233,4 +177,6 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => console.log(`AIOS Lab running at http://localhost:${PORT}`));
+if (require.main === module) server.listen(PORT, () => console.log(`AIOS Lab running at http://localhost:${PORT}`));
+
+module.exports = { buildProductPrompt, buildWorldCheckinPrompt, buildPortraitPrompt, buildTryonPrompt };
