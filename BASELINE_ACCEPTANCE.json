@@ -1,0 +1,34 @@
+{
+  "repository_head_at_test_time": "2fae5d1b836e456358a0c4e6cf40baf622ea79f1",
+  "tested_at": "2026-09-01T00:00:00Z",
+  "status_definitions": {
+    "GREEN_LOCAL_CONTRACT": "Deterministic local contract evidence only; not live-provider proof.",
+    "UNKNOWN_LIVE_PROVIDER": "Provider-backed runtime exists but live behavior is unverified.",
+    "PLACEHOLDER_NO_RUNTIME": "Catalog entry has no provider-backed runtime route."
+  },
+  "skills": [
+    {"id":"product-photo","status":"GREEN_LOCAL_CONTRACT","test_file":"human-image-prompt-test.js","notes":"UNKNOWN_LIVE_PROVIDER"},
+    {"id":"product-description","status":"PLACEHOLDER_NO_RUNTIME","test_file":null},
+    {"id":"viral-caption-generator","status":"PLACEHOLDER_NO_RUNTIME","test_file":null},
+    {"id":"seven-day-content-planner","status":"PLACEHOLDER_NO_RUNTIME","test_file":null},
+    {"id":"tiktok-hook-generator","status":"PLACEHOLDER_NO_RUNTIME","test_file":null},
+    {"id":"reel-script-30s","status":"PLACEHOLDER_NO_RUNTIME","test_file":null},
+    {"id":"thumbnail-brief","status":"PLACEHOLDER_NO_RUNTIME","test_file":null},
+    {"id":"premium-portrait-enhancer","status":"GREEN_LOCAL_CONTRACT","test_file":"human-image-prompt-test.js","notes":"UNKNOWN_LIVE_PROVIDER"},
+    {"id":"world-checkin","status":"GREEN_LOCAL_CONTRACT","test_file":"human-image-prompt-test.js","notes":"UNKNOWN_LIVE_PROVIDER"},
+    {"id":"hairstyle-tryon","status":"PLACEHOLDER_NO_RUNTIME","test_file":null},
+    {"id":"travel-postcard","status":"PLACEHOLDER_NO_RUNTIME","test_file":null},
+    {"id":"virtual-tryon","status":"GREEN_LOCAL_CONTRACT","test_file":"human-image-prompt-test.js","notes":"UNKNOWN_LIVE_PROVIDER"},
+    {"id":"cv-builder-lite","status":"PLACEHOLDER_NO_RUNTIME","test_file":null},
+    {"id":"summarize-text","status":"PLACEHOLDER_NO_RUNTIME","test_file":null},
+    {"id":"rewrite-text","status":"PLACEHOLDER_NO_RUNTIME","test_file":null},
+    {"id":"translate-text","status":"PLACEHOLDER_NO_RUNTIME","test_file":null},
+    {"id":"facebook-post","status":"GREEN_LOCAL_CONTRACT","test_file":"text-http-contract-test.js","notes":"UNKNOWN_LIVE_PROVIDER"},
+    {"id":"tiktok-reel-post","status":"GREEN_LOCAL_CONTRACT","test_file":"text-http-contract-test.js","notes":"UNKNOWN_LIVE_PROVIDER"},
+    {"id":"multi-platform-product-description","status":"GREEN_LOCAL_CONTRACT","test_file":"text-http-contract-test.js","notes":"UNKNOWN_LIVE_PROVIDER"},
+    {"id":"long-to-short-post","status":"GREEN_LOCAL_CONTRACT","test_file":"text-http-contract-test.js","notes":"UNKNOWN_LIVE_PROVIDER"},
+    {"id":"thirty-day-content-plan","status":"GREEN_LOCAL_CONTRACT","test_file":"text-http-contract-test.js","notes":"UNKNOWN_LIVE_PROVIDER"},
+    {"id":"poster-thumbnail-brief","status":"GREEN_LOCAL_CONTRACT","test_file":"text-http-contract-test.js","notes":"UNKNOWN_LIVE_PROVIDER"},
+    {"id":"social-ad-creative-brief","status":"GREEN_LOCAL_CONTRACT","test_file":"text-http-contract-test.js","notes":"UNKNOWN_LIVE_PROVIDER"}
+  ]
+}
