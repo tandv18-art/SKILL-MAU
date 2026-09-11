@@ -40,6 +40,10 @@ async function main() {
   assert.ok(context.AIOS_TRANSLATIONS.vi);
   const publicSkillIds = [...elements['skill-grid'].innerHTML.matchAll(/data-skill="([^"]+)"/g)].map(match => match[1]);
   assert.deepEqual(publicSkillIds, ['product-photo','premium-portrait-enhancer','world-checkin','virtual-tryon','facebook-post','tiktok-reel-post','multi-platform-product-description','long-to-short-post','thirty-day-content-plan','poster-thumbnail-brief','social-ad-creative-brief']);
+  assert.equal(publicSkillIds.length, 11);
+  const visitorFacingSources = ['index.html','app.js'].map(file => fs.readFileSync(file, 'utf8')).join('\n');
+  assert.ok(!visitorFacingSources.includes('support@aioslab.vn'));
+  for (const locale of ['vi','en']) for (const key of ['tools','how','useCases','pricing','faq']) assert.ok(context.AIOS_TRANSLATIONS[locale].kickers[key]);
   assert.equal((elements['pricing-grid'].innerHTML.match(/class="price-card/g) || []).length, 6);
   assert.equal((elements['pricing-grid'].innerHTML.match(/data-plan=/g) || []).length, 6);
   assert.ok(!elements['pricing-grid'].innerHTML.includes('href="#skills"'));
