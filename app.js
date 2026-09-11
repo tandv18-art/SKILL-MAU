@@ -1,4 +1,4 @@
-const state = { lang: 'vi', filter: 'all', activeSkill: null, showAll: false, selectedImageUrls: {}, viewerImages: [], viewerIndex: 0, viewerScale: 1, selectedPlan: null };
+const state = { lang: 'vi', filter: 'all', activeSkill: null, showAll: false, selectedImageUrls: {}, viewerImages: [], viewerIndex: 0, viewerScale: 1, selectedPlan: null, heroSlide: 0 };
 const PUBLIC_SKILL_IDS = new Set(['product-photo','world-checkin','premium-portrait-enhancer','virtual-tryon','facebook-post','tiktok-reel-post','multi-platform-product-description','long-to-short-post','thirty-day-content-plan','poster-thumbnail-brief','social-ad-creative-brief']);
 const REAL_TEXT_SKILLS = new Set(['facebook-post','tiktok-reel-post','multi-platform-product-description','long-to-short-post','thirty-day-content-plan','poster-thumbnail-brief','social-ad-creative-brief']);
 const IMAGE_ENDPOINTS = { 'product-photo':'/api/product-photo', 'world-checkin':'/api/world-checkin', 'premium-portrait-enhancer':'/api/premium-portrait-enhancer', 'virtual-tryon':'/api/virtual-tryon' };
@@ -26,6 +26,13 @@ function renderSkills() {
   const categoryIcons = { seller:'▣', content:'✦', photo:'◫', work:'✓' };
   $('#skill-grid').innerHTML = skills.map(skill => `<article class="skill-card"><div class="skill-card-top"><span class="skill-icon ${skill.category}">${categoryIcons[skill.category]}</span><span class="skill-type">${t(`skills.${skill.category}`)}</span></div><h3>${state.lang === 'vi' ? skill.titleVi : skill.titleEn}</h3><p>${state.lang === 'vi' ? skill.benefitVi : skill.benefitEn}</p><button class="text-button" data-skill="${skill.id}">${t('skills.open')} <span>→</span></button></article>`).join('');
   $('#show-all-skills').hidden = true;
+}
+
+function showHeroSlide(index) {
+  const slides = $$('[data-hero-slide]'); if (!slides.length) return;
+  state.heroSlide = (index + slides.length) % slides.length;
+  slides.forEach((slide, i) => { const active = i === state.heroSlide; slide.classList.toggle('active', active); slide.setAttribute('aria-hidden', String(!active)); });
+  $$('[data-slide]').forEach((dot, i) => dot.classList.toggle('active', i === state.heroSlide));
 }
 
 function renderSteps() { $('#steps').innerHTML = t('how.steps').map(step => `<article><span>${step[0]}</span><h3>${step[1]}</h3><p>${step[2]}</p></article>`).join(''); }
@@ -73,6 +80,8 @@ function openAuth(mode) { const copy = { login:['Đăng nhập','Tiếp tục v�
 function openCheckout(planId) { const plan = window.AIOS_PRICING.find(item => item.id === planId); if (!plan) return; state.selectedPlan = plan; $('#checkout-plan').innerHTML = `<b>${plan.name}</b><strong>${plan.price}${plan.billingPeriod ? ` ${t('pricing.month')}` : ''}</strong>`; openShell('checkout-shell'); }
 const shellContent = { help:['Trợ giúp','Khám phá công cụ, quản lý yêu cầu hoặc liên hệ đội ngũ TÔI LÀ AI.'], contact:['Liên hệ','Email: admintoilaai@gmail.com'], terms:['Điều khoản','Các điều khoản sử dụng dịch vụ TÔI LÀ AI.'], privacy:['Quyền riêng tư','Thông tin về cách TÔI LÀ AI bảo vệ dữ liệu và quyền riêng tư.'], payment:['Thanh toán','Thông tin về phương thức và trạng thái thanh toán.'], refund:['Hoàn tiền','Chính sách và điều kiện yêu cầu hoàn tiền.'], cancellation:['Hủy / Gia hạn','Quản lý chu kỳ và lựa chọn gia hạn dịch vụ.'], policy:['Chính sách sử dụng AI','Nguyên tắc sử dụng công cụ AI an toàn và có trách nhiệm.'] };
 document.addEventListener('click', event => {
+  const slider = event.target.closest('[data-slider]'); if (slider) showHeroSlide(state.heroSlide + (slider.dataset.slider === 'next' ? 1 : -1));
+  const slide = event.target.closest('[data-slide]'); if (slide) showHeroSlide(Number(slide.dataset.slide));
   const showAll = event.target.closest('#show-all-skills'); if (showAll) { state.filter = 'all'; state.showAll = true; renderCategories(); renderSkills(); }
   const filter = event.target.closest('[data-filter]'); if (filter) { state.filter = filter.dataset.filter; state.showAll = true; renderCategories(); renderSkills(); $('#skills').scrollIntoView({behavior:'smooth'}); }
   const skill = event.target.closest('[data-skill]'); if (skill) openSkill(skill.dataset.skill);
@@ -109,3 +118,4 @@ $('#skill-form').addEventListener('submit', async event => {
 $('#image-viewer').addEventListener('wheel', event => { event.preventDefault(); state.viewerScale = Math.max(.5, Math.min(4, state.viewerScale + (event.deltaY < 0 ? .15 : -.15))); updateViewer(); }, {passive:false});
 document.addEventListener('keydown', event => { if ($('#image-viewer').classList.contains('open')) { if (event.key === 'ArrowRight') viewerAction('next'); if (event.key === 'ArrowLeft') viewerAction('prev'); if (event.key === '+' || event.key === '=') viewerAction('zoom-in'); if (event.key === '-') viewerAction('zoom-out'); if (event.key === 'Escape') viewerAction('close'); return; } if (event.key === 'Escape') { closeModal(); closeShells(); } });
 applyTranslations();
+if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => showHeroSlide(state.heroSlide + 1), 6500);
