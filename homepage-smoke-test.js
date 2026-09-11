@@ -53,3 +53,5 @@ async function main() {
 }
 
 main().catch(error => { console.error(error); process.exitCode = 1; });
+
+// Preview deployment trigger for PR #16.
