@@ -38,13 +38,14 @@ async function main() {
   assert.ok(Array.isArray(context.AIOS_SKILLS));
   assert.ok(Array.isArray(context.AIOS_PRICING));
   assert.ok(context.AIOS_TRANSLATIONS.vi);
-  assert.equal((elements['skill-grid'].innerHTML.match(/class="skill-card"/g) || []).length, 6);
+  const publicSkillIds = [...elements['skill-grid'].innerHTML.matchAll(/data-skill="([^"]+)"/g)].map(match => match[1]);
+  assert.deepEqual(publicSkillIds, ['product-photo','premium-portrait-enhancer','world-checkin','virtual-tryon','facebook-post','tiktok-reel-post','multi-platform-product-description','long-to-short-post','thirty-day-content-plan','poster-thumbnail-brief','social-ad-creative-brief']);
   assert.equal((elements['pricing-grid'].innerHTML.match(/class="price-card/g) || []).length, 6);
   assert.equal((elements['pricing-grid'].innerHTML.match(/data-plan=/g) || []).length, 6);
   assert.ok(!elements['pricing-grid'].innerHTML.includes('href="#skills"'));
   assert.equal((elements['faq-list'].innerHTML.match(/<details/g) || []).length, context.AIOS_TRANSLATIONS.vi.faq.items.length);
   assert.equal((elements.steps.innerHTML.match(/<article>/g) || []).length, 3);
-  console.log('Homepage DOM smoke test passed: 6 skills, 6 plans, 3 FAQ rows, 3 process steps.');
+  console.log('Homepage DOM smoke test passed: 11 public skills, 6 plans, 3 FAQ rows, 3 process steps.');
 }
 
 main().catch(error => { console.error(error); process.exitCode = 1; });

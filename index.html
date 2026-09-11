@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AIOS Lab — công cụ AI chuyên sâu cho hình ảnh, nội dung, bán hàng và công việc.">
-  <title>AIOS Lab — AI kiến tạo tương lai</title>
+  <meta name="description" content="TÔI LÀ AI — công cụ AI dễ dùng cho nội dung, hình ảnh và công việc mỗi ngày.">
+  <meta name="theme-color" content="#06100c">
+  <title>TÔI LÀ AI — AI đơn giản cho công việc mỗi ngày</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,19 +14,19 @@
 <body>
   <header class="nav-shell">
     <nav class="nav container" aria-label="Điều hướng chính">
-      <a class="brand" href="#top" aria-label="AIOS Lab"><span class="brand-mark">A</span><span>AIOS Lab</span></a>
+      <a class="brand" href="#top" aria-label="TÔI LÀ AI — Trang chủ"><span class="brand-mark" aria-hidden="true">T</span><span>TÔI LÀ AI</span></a>
       <button class="menu-toggle" aria-label="Mở menu" aria-expanded="false">☰</button>
       <div class="nav-links">
-        <a href="#skills" data-i18n="nav.products">Sản phẩm</a>
-        <a href="#results" data-i18n="nav.results">Kết quả</a>
-        <a href="#pricing" data-i18n="nav.pricing">Gói dịch vụ</a>
+        <a href="#skills" data-i18n="nav.products">Công cụ AI</a>
+        <a href="#how" data-i18n="nav.results">Cách hoạt động</a>
+        <a href="#pricing" data-i18n="nav.pricing">Bảng giá</a>
         <a href="#faq" data-i18n="nav.help">Trợ giúp</a>
         <button class="nav-account-link shell-link" type="button" data-auth="login" data-i18n="nav.signin">Đăng nhập</button>
         <button class="nav-account-link shell-link" type="button" data-auth="signup" data-i18n="nav.signup">Bắt đầu miễn phí</button>
       </div>
       <div class="nav-actions">
         <label class="sr-only" for="language">Ngôn ngữ</label>
-        <select id="language" class="language-select" aria-label="Ngôn ngữ"><option value="vi">Tiếng Việt</option><option value="en">English</option><option value="ko">한국어 — Coming soon</option><option value="ja">日本語 — Coming soon</option><option value="zh">中文 — Coming soon</option></select>
+        <select id="language" class="language-select" aria-label="Ngôn ngữ"><option value="vi">VI</option><option value="en">EN</option><option value="ko">한국어 — Coming soon</option><option value="ja">日本語 — Coming soon</option><option value="zh">中文 — Coming soon</option></select>
         <button class="login-link shell-link" type="button" data-auth="login" data-i18n="nav.signin">Đăng nhập</button>
         <button class="button button-small" type="button" data-auth="signup" data-i18n="nav.signup">Bắt đầu miễn phí</button>
       </div>
@@ -33,81 +34,87 @@
   </header>
 
   <main id="top">
-    <section class="hero container">
-      <div class="hero-copy">
-        <div class="eyebrow"><span></span><span data-i18n="hero.eyebrow">AI THỰC DỤNG · KẾT QUẢ THẬT</span></div>
-        <h1><span data-i18n="hero.titleLead">AI kiến tạo</span> <span class="headline-accent" data-i18n="hero.titleAccent">tương lai.</span></h1>
-        <p data-i18n="hero.subtitle">Đơn giản hóa thế giới phức tạp cùng AI.</p>
-        <div class="hero-actions"><a class="button" href="#skills" data-i18n="hero.primary">Khám phá công cụ</a><button class="button button-ghost" type="button" data-skill="product-photo" data-i18n="hero.secondary">Thử tạo ảnh</button></div>
-      </div>
-      <div class="hero-showcase" aria-label="Năng lực AIOS Lab">
-        <div class="showcase-halo"></div>
-        <article class="hero-result hero-result-main">
-          <div class="result-label"><span class="status-dot"></span><span>World Check-in</span><small>IMAGE AI</small></div>
-          <div class="visual-slot visual-world" role="img" aria-label="Khung kết quả World Check-in có thể thay thế">
-            <span class="scene-sun"></span><span class="scene-land"></span><span class="scene-person"></span>
-            <b data-i18n="showcase.result">Kết quả của bạn</b>
+    <section class="hero">
+      <div class="hero-ambient" aria-hidden="true"></div>
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow"><span></span><span data-i18n="hero.eyebrow">AI THỰC CHIẾN • DỄ HIỂU • DỄ DÙNG</span></div>
+          <h1><span data-i18n="hero.titleLead">AI đơn giản</span><br><span class="headline-accent" data-i18n="hero.titleAccent">cho công việc mỗi ngày.</span></h1>
+          <p data-i18n="hero.subtitle">Biến ý tưởng thành nội dung, hình ảnh và kết quả thực tế bằng những công cụ AI dễ dùng.</p>
+          <div class="hero-actions"><a class="button" href="#skills" data-i18n="hero.primary">Khám phá công cụ</a><a class="button button-ghost" href="#how" data-i18n="hero.secondary">Xem cách hoạt động</a></div>
+        </div>
+        <div class="hero-showcase" aria-label="Không gian sáng tạo AI cho nội dung, hình ảnh, phân tích và ý tưởng">
+          <div class="showcase-orbit orbit-one" aria-hidden="true"></div><div class="showcase-orbit orbit-two" aria-hidden="true"></div>
+          <div class="command-surface">
+            <div class="surface-top"><span><i></i><i></i><i></i></span><small>AI CREATIVE SPACE</small><b aria-hidden="true">✦</b></div>
+            <div class="surface-body">
+              <div class="prompt-line"><span aria-hidden="true">⌁</span><p data-i18n="showcase.prompt">Hôm nay bạn muốn tạo điều gì?</p></div>
+              <div class="capability-grid">
+                <div><span aria-hidden="true">Aa</span><b data-i18n="showcase.write">Viết nội dung</b><i></i></div>
+                <div><span aria-hidden="true">◫</span><b data-i18n="showcase.image">Tạo hình ảnh</b><i></i></div>
+                <div><span aria-hidden="true">⌁</span><b data-i18n="showcase.analyze">Phân tích</b><i></i></div>
+                <div><span aria-hidden="true">✦</span><b data-i18n="showcase.idea">Ý tưởng</b><i></i></div>
+              </div>
+            </div>
           </div>
-        </article>
-        <div class="capability-stack">
-          <article class="capability capability-product"><span>01</span><b>Product Photo</b><small data-i18n="showcase.commerce">Hình ảnh thương mại</small></article>
-          <article class="capability capability-portrait"><span>02</span><b>Portrait / Try-on</b><small data-i18n="showcase.identity">Giữ đúng nhận diện</small></article>
-          <article class="capability capability-content"><span>03</span><b>Content AI</b><div class="content-lines"><i></i><i></i><i></i></div></article>
+          <div class="floating-chip chip-left"><span>✦</span><b data-i18n="showcase.simple">Đơn giản</b></div>
+          <div class="floating-chip chip-right"><span>✓</span><b data-i18n="showcase.ready">Sẵn sàng dùng</b></div>
         </div>
       </div>
     </section>
 
-    <section id="use-cases" class="category-section">
-      <div class="container"><div id="category-row" class="category-row" aria-label="Danh mục công cụ"></div></div>
+    <section id="use-cases" class="outcomes-section section">
+      <div class="container outcomes-grid">
+        <article><span>01</span><div><h2 data-i18n="outcomes.smartTitle">Làm việc thông minh hơn</h2><p data-i18n="outcomes.smartText">Giảm việc lặp lại và tiết kiệm thời gian.</p></div></article>
+        <article><span>02</span><div><h2 data-i18n="outcomes.peopleTitle">AI dành cho mọi người</h2><p data-i18n="outcomes.peopleText">Không cần biết lập trình hay kỹ thuật phức tạp.</p></div></article>
+        <article><span>03</span><div><h2 data-i18n="outcomes.realTitle">Kết quả thực tế</h2><p data-i18n="outcomes.realText">Ứng dụng ngay vào công việc và kinh doanh.</p></div></article>
+      </div>
     </section>
 
-    <section id="skills" class="section section-tint">
+    <section id="skills" class="section section-surface">
       <div class="container">
-        <div class="title-row"><h2 class="section-title" data-i18n="skills.title">AI CHUYÊN SÂU</h2><button class="text-link" id="show-all-skills" type="button" data-i18n="skills.viewAll">Xem tất cả công cụ <span>→</span></button></div>
+        <div class="section-heading"><div><span class="section-kicker">11 AI TOOLS</span><h2 class="section-title" data-i18n="skills.title">CÔNG CỤ CHO VIỆC THẬT</h2></div><p data-i18n="skills.intro">Chọn đúng công cụ, mô tả điều bạn cần và bắt đầu ngay.</p></div>
+        <div id="category-row" class="category-row" aria-label="Danh mục công cụ"></div>
+        <button class="text-link" id="show-all-skills" type="button" data-i18n="skills.viewAll" hidden>Xem tất cả công cụ</button>
         <div id="skill-grid" class="skill-grid"></div>
       </div>
     </section>
 
-    <section id="results" class="section results-section">
+    <section class="section" id="how">
+      <div class="container"><div class="section-heading"><div><span class="section-kicker">3 BƯỚC</span><h2 class="section-title" data-i18n="how.title">BẮT ĐẦU THẬT DỄ</h2></div></div><div id="steps" class="steps"></div></div>
+    </section>
+
+    <section id="results" class="section use-case-section">
       <div class="container">
-        <h2 class="section-title" data-i18n="results.title">KẾT QUẢ</h2>
-        <div class="results-grid">
-          <article class="result-card result-large"><div class="result-card-head"><b>Product Photo</b><span>COMMERCE</span></div><div class="visual-slot product-slot" aria-label="Bản xem trước Product Photo"><span class="product-plinth"></span><span class="product-pack">AIOS</span></div></article>
-          <article class="result-card"><div class="result-card-head"><b>World Check-in</b><span>TRAVEL</span></div><div class="visual-slot visual-world" aria-label="Bản xem trước World Check-in"><span class="scene-sun"></span><span class="scene-land"></span><span class="scene-person"></span></div></article>
-          <article class="result-card"><div class="result-card-head"><b>Portrait / Try-on</b><span>IDENTITY</span></div><div class="visual-slot portrait-slot" aria-label="Bản xem trước Portrait và Try-on"><span class="portrait-head"></span><span class="portrait-body"></span></div></article>
-          <article class="result-card content-output"><div class="result-card-head"><b>Content AI</b><span>STRUCTURED</span></div><div class="output-preview"><strong data-i18n="results.contentTitle">Bản nháp nội dung</strong><p></p><p></p><p></p><div><i>#brand</i><i>#launch</i></div></div></article>
+        <div class="section-heading"><div><span class="section-kicker">ỨNG DỤNG MỖI NGÀY</span><h2 class="section-title" data-i18n="results.title">TỪ Ý TƯỞNG ĐẾN KẾT QUẢ</h2></div><p data-i18n="results.intro">Những việc quen thuộc, nay được làm nhanh và rõ ràng hơn.</p></div>
+        <div class="use-case-grid">
+          <article><span>01</span><b data-i18n="results.facebook">Viết bài Facebook</b></article><article><span>02</span><b data-i18n="results.product">Tạo ảnh sản phẩm</b></article>
+          <article><span>03</span><b data-i18n="results.portrait">Tạo/chỉnh chân dung</b></article><article><span>04</span><b data-i18n="results.tryon">Thử trang phục</b></article>
+          <article><span>05</span><b data-i18n="results.description">Viết mô tả sản phẩm</b></article><article><span>06</span><b data-i18n="results.plan">Lên kế hoạch nội dung</b></article>
+          <article><span>07</span><b data-i18n="results.shorten">Biến bài dài thành bài ngắn</b></article><article><span>08</span><b data-i18n="results.ads">Lên ý tưởng quảng cáo</b></article>
         </div>
       </div>
     </section>
 
-    <section class="section container" id="how">
-      <h2 class="section-title" data-i18n="how.title">QUY TRÌNH</h2>
-      <div id="steps" class="steps"></div>
+    <section id="pricing" class="section section-surface">
+      <div class="container"><div class="section-heading"><div><span class="section-kicker">LỰA CHỌN PHÙ HỢP</span><h2 class="section-title" data-i18n="pricing.title">BẢNG GIÁ</h2></div></div><div id="pricing-grid" class="pricing-grid"></div></div>
     </section>
 
-    <section id="pricing" class="section section-dark">
-      <div class="container"><h2 class="section-title light-title" data-i18n="pricing.title">GÓI DỊCH VỤ</h2><div id="pricing-grid" class="pricing-grid"></div></div>
-    </section>
+    <section id="faq" class="section"><div class="container faq-layout"><div><span class="section-kicker">HỎI ĐÁP</span><h2 class="section-title faq-title" data-i18n="faq.title">CÂU HỎI THƯỜNG GẶP</h2></div><div id="faq-list" class="faq-list"></div></div></section>
 
-    <section id="faq" class="section container"><h2 class="section-title faq-title" data-i18n="faq.title">CÂU HỎI</h2><div id="faq-list" class="faq-list"></div></section>
+    <section class="final-cta section"><div class="container"><div class="final-cta-card"><span>✦</span><h2 data-i18n="finalCta.title">Biến ý tưởng thành kết quả ngay hôm nay.</h2><p data-i18n="finalCta.text">Chọn một công cụ và bắt đầu bằng điều bạn đang cần.</p><a class="button" href="#skills" data-i18n="hero.primary">Khám phá công cụ</a></div></div></section>
   </main>
 
-  <footer><div class="container footer-grid"><div><a class="brand brand-light" href="#top"><span class="brand-mark">A</span><span>AIOS Lab</span></a><p data-i18n="footer.blurb">AI chuyên sâu cho những công việc thực tế.</p></div><div><b data-i18n="footer.product">Sản phẩm</b><a href="#skills" data-i18n="footer.tools">Công cụ AI</a><a href="#pricing" data-i18n="nav.pricing">Gói dịch vụ</a></div><div><b data-i18n="footer.support">Hỗ trợ</b><button class="footer-link" type="button" data-shell="help">Trợ giúp</button><button class="footer-link" type="button" data-shell="contact">Liên hệ</button></div><div id="account"><b data-i18n="footer.account">Tài khoản</b><button class="footer-link" type="button" data-auth="login" data-i18n="footer.signin">Đăng nhập</button><button class="footer-link" type="button" data-auth="signup" data-i18n="footer.signup">Đăng ký</button></div><div><b data-i18n="footer.legal">Pháp lý</b><button class="footer-link" type="button" data-shell="terms" data-i18n="footer.terms">Điều khoản</button><button class="footer-link" type="button" data-shell="privacy" data-i18n="footer.privacy">Quyền riêng tư</button></div></div><div class="container footer-bottom"><span>© 2026 AIOS Lab</span><span data-i18n="footer.note">AI thực dụng. Kết quả rõ ràng.</span></div></footer>
+  <footer><div class="container footer-grid"><div><a class="brand brand-light" href="#top"><span class="brand-mark">T</span><span>TÔI LÀ AI</span></a><p data-i18n="footer.blurb">AI thực chiến • dễ hiểu • dễ dùng</p></div><div><b data-i18n="footer.product">Khám phá</b><a href="#skills" data-i18n="footer.tools">Công cụ AI</a><a href="#how" data-i18n="nav.results">Cách hoạt động</a><a href="#pricing" data-i18n="nav.pricing">Bảng giá</a></div><div><b data-i18n="footer.support">Hỗ trợ</b><button class="footer-link" type="button" data-shell="help">Trợ giúp</button><button class="footer-link" type="button" data-shell="contact">Liên hệ</button></div><div id="account"><b data-i18n="footer.legal">Pháp lý</b><button class="footer-link" type="button" data-shell="terms" data-i18n="footer.terms">Điều khoản</button><button class="footer-link" type="button" data-shell="privacy" data-i18n="footer.privacy">Quyền riêng tư</button></div></div><div class="container footer-bottom"><span>© 2026 TÔI LÀ AI</span><span data-i18n="footer.note">AI đơn giản cho công việc mỗi ngày.</span></div></footer>
 
   <a class="support-control" href="mailto:support@aioslab.vn" aria-label="Liên hệ hỗ trợ"><span>?</span><b data-i18n="footer.support">Hỗ trợ</b></a>
-  <div class="modal launcher-modal" id="skill-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="modal-backdrop" data-close-modal></div><div class="launcher-workspace"><button class="modal-close" data-close-modal aria-label="Đóng">×</button><aside class="launcher-input"><div class="modal-head"><span class="skill-category" id="modal-category"></span><h2 id="modal-title"></h2><p id="modal-benefit"></p></div><form id="skill-form"><div id="skill-fields"></div><button class="button run-button" type="submit"><span>✦</span><span data-i18n="common.create">Tạo ngay</span></button></form></aside><section class="launcher-output" aria-live="polite"><div class="output-toolbar"><b>AIOS Result Workspace</b><button class="text-button" type="button" data-regenerate hidden>Tạo lại</button></div><div class="result-box" id="result-box"><span class="result-icon">◎</span><b data-i18n="launcher.resultTitle">Kết quả sẽ xuất hiện tại đây</b><p data-i18n="launcher.resultText">Nhập yêu cầu để bắt đầu.</p></div></section></div>
-  </div>
+  <div class="modal launcher-modal" id="skill-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-backdrop" data-close-modal></div><div class="launcher-workspace"><button class="modal-close" data-close-modal aria-label="Đóng">×</button><aside class="launcher-input"><div class="modal-head"><span class="skill-category" id="modal-category"></span><h2 id="modal-title"></h2><p id="modal-benefit"></p></div><form id="skill-form"><div id="skill-fields"></div><button class="button run-button" type="submit"><span>✦</span><span data-i18n="common.create">Tạo ngay</span></button></form></aside><section class="launcher-output" aria-live="polite"><div class="output-toolbar"><b data-i18n="launcher.workspace">Kết quả của bạn</b><button class="text-button" type="button" data-regenerate hidden>Tạo lại</button></div><div class="result-box" id="result-box"><span class="result-icon">◎</span><b data-i18n="launcher.resultTitle">Kết quả sẽ xuất hiện tại đây</b><p data-i18n="launcher.resultText">Nhập yêu cầu để bắt đầu.</p></div></section></div></div>
 
-  <div class="shell-overlay" id="auth-shell" aria-hidden="true"><div class="shell-backdrop" data-close-shell></div><section class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title"><button class="modal-close" data-close-shell aria-label="Đóng">×</button><span class="skill-category">AIOS ACCOUNT</span><h2 id="auth-title">Đăng nhập</h2><p id="auth-copy">Tiếp tục vào không gian làm việc AIOS Lab.</p><button class="google-button" type="button">G&nbsp;&nbsp; Tiếp tục với Google</button><div class="auth-divider"><span>hoặc</span></div><form id="auth-form"><label>Email<input type="email" required autocomplete="email" placeholder="you@example.com"></label><label id="password-field">Mật khẩu<input type="password" required autocomplete="current-password"></label><button class="button" type="submit">Tiếp tục</button></form><button class="shell-link auth-switch" type="button" data-auth="forgot">Quên mật khẩu?</button><button class="shell-link auth-switch" type="button" data-open-workspace>Xem không gian làm việc</button><p class="shell-note" id="auth-note">Giao diện tài khoản bảo mật của AIOS Lab.</p></section></div>
-
-  <div class="shell-overlay" id="workspace-shell" aria-hidden="true"><div class="shell-backdrop" data-close-shell></div><section class="workspace-card" role="dialog" aria-modal="true" aria-label="Không gian làm việc"><aside><a class="brand" href="#top"><span class="brand-mark">A</span><span>AIOS Lab</span></a><nav id="workspace-nav"><button class="active" data-workspace="home">⌂ Home</button><button data-workspace="tools">◇ All Tools</button><button data-workspace="creations">◫ My Creations</button><button data-workspace="usage">◌ Usage / Credits</button><button data-workspace="billing">▤ Billing</button><button data-workspace="account">○ Account</button><button data-workspace="help">? Help</button></nav></aside><main><button class="modal-close" data-close-shell aria-label="Đóng">×</button><span class="skill-category">WORKSPACE</span><h2 id="workspace-title">Home</h2><div id="workspace-content" class="workspace-content"></div></main></section></div>
-
-  <div class="shell-overlay" id="checkout-shell" aria-hidden="true"><div class="shell-backdrop" data-close-shell></div><section class="checkout-card" role="dialog" aria-modal="true" aria-labelledby="checkout-title"><button class="modal-close" data-close-shell aria-label="Đóng">×</button><span class="skill-category">SECURE CHECKOUT</span><h2 id="checkout-title">Chọn phương thức thanh toán</h2><div id="checkout-plan"></div><div class="payment-grid"><button type="button">VietQR</button><button type="button">VNPay</button><button type="button">MoMo</button><button type="button">ZaloPay</button><button type="button">Visa / Mastercard</button><button type="button">Stripe-compatible Card</button></div><p class="shell-note">Chọn phương thức để tiếp tục đến bước xác nhận.</p><div class="checkout-policies"><button data-shell="payment">Thanh toán</button><button data-shell="refund">Hoàn tiền</button><button data-shell="cancellation">Hủy / Gia hạn</button><button data-shell="policy">Chính sách AI</button></div></section></div>
-
-  <div class="shell-overlay" id="content-shell" aria-hidden="true"><div class="shell-backdrop" data-close-shell></div><section class="content-shell-card" role="dialog" aria-modal="true"><button class="modal-close" data-close-shell aria-label="Đóng">×</button><span class="skill-category">AIOS LAB</span><h2 id="content-shell-title"></h2><div id="content-shell-body"></div></section></div>
-
-  <div class="image-viewer" id="image-viewer" aria-hidden="true"><div class="viewer-top"><span id="viewer-count"></span><div><button data-viewer="zoom-out" aria-label="Thu nhỏ">−</button><button data-viewer="reset" aria-label="Vừa màn hình">Fit</button><button data-viewer="zoom-in" aria-label="Phóng to">+</button><a id="viewer-download" download="aios-result.png">Tải xuống</a><button data-viewer="close" aria-label="Đóng">×</button></div></div><button class="viewer-nav prev" data-viewer="prev" aria-label="Ảnh trước">‹</button><div class="viewer-stage"><img id="viewer-image" alt="Kết quả AIOS Lab"></div><button class="viewer-nav next" data-viewer="next" aria-label="Ảnh tiếp">›</button></div>
+  <div class="shell-overlay" id="auth-shell" aria-hidden="true"><div class="shell-backdrop" data-close-shell></div><section class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title"><button class="modal-close" data-close-shell aria-label="Đóng">×</button><span class="skill-category">TÀI KHOẢN</span><h2 id="auth-title">Đăng nhập</h2><p id="auth-copy">Tiếp tục vào không gian làm việc TÔI LÀ AI.</p><button class="google-button" type="button">G&nbsp;&nbsp; Tiếp tục với Google</button><div class="auth-divider"><span>hoặc</span></div><form id="auth-form"><label>Email<input type="email" required autocomplete="email" placeholder="you@example.com"></label><label id="password-field">Mật khẩu<input type="password" required autocomplete="current-password"></label><button class="button" type="submit">Tiếp tục</button></form><button class="shell-link auth-switch" type="button" data-auth="forgot">Quên mật khẩu?</button><button class="shell-link auth-switch" type="button" data-open-workspace>Xem không gian làm việc</button><p class="shell-note" id="auth-note">Giao diện tài khoản bảo mật của TÔI LÀ AI.</p></section></div>
+  <div class="shell-overlay" id="workspace-shell" aria-hidden="true"><div class="shell-backdrop" data-close-shell></div><section class="workspace-card" role="dialog" aria-modal="true" aria-label="Không gian làm việc"><aside><a class="brand" href="#top"><span class="brand-mark">T</span><span>TÔI LÀ AI</span></a><nav id="workspace-nav"><button class="active" data-workspace="home">⌂ Home</button><button data-workspace="tools">◇ All Tools</button><button data-workspace="creations">◫ My Creations</button><button data-workspace="usage">◌ Usage / Credits</button><button data-workspace="billing">▤ Billing</button><button data-workspace="account">○ Account</button><button data-workspace="help">? Help</button></nav></aside><main><button class="modal-close" data-close-shell aria-label="Đóng">×</button><span class="skill-category">KHÔNG GIAN LÀM VIỆC</span><h2 id="workspace-title">Home</h2><div id="workspace-content" class="workspace-content"></div></main></section></div>
+  <div class="shell-overlay" id="checkout-shell" aria-hidden="true"><div class="shell-backdrop" data-close-shell></div><section class="checkout-card" role="dialog" aria-modal="true" aria-labelledby="checkout-title"><button class="modal-close" data-close-shell aria-label="Đóng">×</button><span class="skill-category">THANH TOÁN AN TOÀN</span><h2 id="checkout-title">Chọn phương thức thanh toán</h2><div id="checkout-plan"></div><div class="payment-grid"><button type="button">VietQR</button><button type="button">VNPay</button><button type="button">MoMo</button><button type="button">ZaloPay</button><button type="button">Visa / Mastercard</button><button type="button">Stripe-compatible Card</button></div><p class="shell-note">Chọn phương thức để tiếp tục đến bước xác nhận.</p><div class="checkout-policies"><button data-shell="payment">Thanh toán</button><button data-shell="refund">Hoàn tiền</button><button data-shell="cancellation">Hủy / Gia hạn</button><button data-shell="policy">Chính sách AI</button></div></section></div>
+  <div class="shell-overlay" id="content-shell" aria-hidden="true"><div class="shell-backdrop" data-close-shell></div><section class="content-shell-card" role="dialog" aria-modal="true"><button class="modal-close" data-close-shell aria-label="Đóng">×</button><span class="skill-category">TÔI LÀ AI</span><h2 id="content-shell-title"></h2><div id="content-shell-body"></div></section></div>
+  <div class="image-viewer" id="image-viewer" aria-hidden="true"><div class="viewer-top"><span id="viewer-count"></span><div><button data-viewer="zoom-out" aria-label="Thu nhỏ">−</button><button data-viewer="reset" aria-label="Vừa màn hình">Fit</button><button data-viewer="zoom-in" aria-label="Phóng to">+</button><a id="viewer-download" download="toi-la-ai-result.png">Tải xuống</a><button data-viewer="close" aria-label="Đóng">×</button></div></div><button class="viewer-nav prev" data-viewer="prev" aria-label="Ảnh trước">‹</button><div class="viewer-stage"><img id="viewer-image" alt="Kết quả TÔI LÀ AI"></div><button class="viewer-nav next" data-viewer="next" aria-label="Ảnh tiếp">›</button></div>
   <script src="skills-data.js"></script><script src="pricing-config.js"></script><script src="i18n.js"></script><script src="app.js"></script>
 </body>
 </html>
