@@ -6,3 +6,10 @@ window.AIOS_PRICING = [
   {id:'photo-pro',name:'Photo Pro',price:'149.000đ',currency:'VND',billingPeriod:'month',messageVi:'Ảnh tự nhiên, chỉn chu và đúng ý.',messageEn:'Natural, polished images made your way.',benefitsVi:['Nâng cấp chân dung','Check-in thế giới','Thử kiểu tóc','Bưu thiếp du lịch','Thử trang phục'],benefitsEn:['Portrait enhancement','World check-in','Hairstyle try-on','Travel postcard','Virtual try-on'],recommended:false,enabled:true,monthlyCredits:null,usageLimits:null,checkoutPlanKey:null},
   {id:'all-in',name:'All-in',price:'249.000đ',currency:'VND',billingPeriod:'month',messageVi:'Toàn bộ công cụ AIOS Lab.',messageEn:'Every AIOS Lab tool.',benefitsVi:['Toàn bộ công cụ hiện có','Công cụ mới trong tương lai','Một không gian làm việc thống nhất'],benefitsEn:['All available tools','Future tools','One unified workspace'],recommended:false,enabled:true,monthlyCredits:null,usageLimits:null,checkoutPlanKey:null}
 ];
+
+(() => {
+  const script = document.createElement('script');
+  script.src = '/checkout-runtime.js?v=web21';
+  script.async = false;
+  document.head.append(script);
+})();
