@@ -2,7 +2,7 @@ window.AIOS_TRANSLATIONS = {
   vi:{
     nav:{products:'Sản phẩm',results:'Kết quả',pricing:'Gói dịch vụ',help:'Trợ giúp',signin:'Đăng nhập',signup:'Bắt đầu miễn phí'},
     common:{tryFree:'Dùng thử miễn phí',create:'Tạo ngay',choose:'Chọn gói này'},
-    hero:{eyebrow:'AI THỰC CHIẾN • DỄ HIỂU • DỄ DÙNG',title:'AI KIẾN TẠO TƯƠNG LAI',subtitle:'Đơn giản hóa thế giới phức tạp cùng AI',primary:'Khám phá công cụ',secondary:'Thử tạo ảnh'},
+    hero:{eyebrow:'AI THỰC CHIẾN • DỄ HIỂU • DỄ DÙNG',title:'ACT',subtitle:'Đơn giản hóa thế giới phức tạp cùng AI',primary:'Khám phá công cụ',secondary:'Thử tạo ảnh'},
     showcase:{result:'Kết quả của bạn',commerce:'Hình ảnh thương mại',identity:'Giữ đúng nhận diện'},
     paths:{title:'CHỌN NHANH',seller:'Tôi bán hàng',content:'Tôi làm content',photo:'Tôi muốn ảnh đẹp',all:'Tôi muốn tất cả',sellerText:'Ảnh và nội dung bán hàng.',contentText:'Nội dung sẵn sàng đăng.',photoText:'Chân dung và phong cách.',allText:'Toàn bộ công cụ TÔI LÀ AI.'},
     skills:{title:'AI CHUYÊN SÂU',viewAll:'Xem tất cả công cụ',all:'Tất cả',seller:'Bán hàng',content:'Nội dung',photo:'Hình ảnh',work:'Công việc',open:'Mở công cụ'},
@@ -15,7 +15,7 @@ window.AIOS_TRANSLATIONS = {
   },
   en:{
     nav:{products:'Products',results:'Results',pricing:'Plans',help:'Help',signin:'Sign in',signup:'Start free'},common:{tryFree:'Try for free',create:'Create now',choose:'Choose plan'},
-    hero:{eyebrow:'PRACTICAL AI • EASY TO UNDERSTAND • EASY TO USE',title:'AI SHAPES THE FUTURE',subtitle:'Simplifying a complex world with AI',primary:'Explore tools',secondary:'Try image creation'},
+    hero:{eyebrow:'PRACTICAL AI • EASY TO UNDERSTAND • EASY TO USE',title:'ACT',subtitle:'Simplifying a complex world with AI',primary:'Explore tools',secondary:'Try image creation'},
     showcase:{result:'Your result',commerce:'Commercial imagery',identity:'Identity preserved'},
     paths:{title:'QUICK START',seller:'I sell online',content:'I create content',photo:'I want better photos',all:'I want everything',sellerText:'Sales images and content.',contentText:'Publish-ready content.',photoText:'Portrait and style.',allText:'Every TÔI LÀ AI tool.'},
     skills:{title:'SPECIALIST AI',viewAll:'View all tools',all:'All',seller:'Selling',content:'Content',photo:'Images',work:'Work',open:'Open tool'},
