@@ -17,4 +17,9 @@ window.AIOS_PRICING = [
   quota.src = '/quota-ui.js?v=web21-final-quota';
   quota.async = false;
   document.head.append(quota);
+
+  const mainProduct = document.createElement('script');
+  mainProduct.src = '/main-product.js?v=web21-main-product';
+  mainProduct.async = false;
+  document.head.append(mainProduct);
 })();
