@@ -9,9 +9,12 @@ function send(res, status, body) {
   res.end(JSON.stringify(body));
 }
 
+function blobAuthOptions() {
+  return process.env.BLOB_READ_WRITE_TOKEN ? { token: process.env.BLOB_READ_WRITE_TOKEN } : {};
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') return send(res, 405, { success: false, error: 'Method not allowed.' });
-  if (!process.env.BLOB_READ_WRITE_TOKEN) return send(res, 503, { success: false, error: 'Media storage is not configured.' });
 
   const session = await getSession(req);
   const userId = safeUserSegment(session?.user?.id);
@@ -28,7 +31,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const { get } = await import('@vercel/blob');
-    const result = await get(pathname, { access: 'private', token: process.env.BLOB_READ_WRITE_TOKEN });
+    const result = await get(pathname, { access: 'private', ...blobAuthOptions() });
     if (!result || result.statusCode !== 200 || !result.stream) return send(res, 404, { success: false, error: 'Không tìm thấy tệp.' });
 
     res.statusCode = 200;
