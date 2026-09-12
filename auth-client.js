@@ -308,5 +308,6 @@
   rememberAuthSlots();
   const params = new URLSearchParams(location.search);
   if (params.get('auth') === 'reset' && params.get('token')) authState.resetToken = params.get('token');
+  if (params.get('auth') === 'error') setTimeout(() => { openAuthReal('login'); setNote(text('Đăng nhập Google chưa hoàn tất. Vui lòng thử lại.', 'Google sign-in did not complete. Please try again.'), true); }, 0);
   hydrateSession().finally(() => { if (authState.resetToken) openAuthReal('reset'); });
 })();
