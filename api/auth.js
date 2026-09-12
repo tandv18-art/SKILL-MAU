@@ -101,6 +101,8 @@ module.exports = async function handler(req, res) {
     res.setHeader('x-content-type-options', 'nosniff');
     res.setHeader('content-type', upstream.headers.get('content-type') || 'application/json; charset=utf-8');
     if (cookies.length) res.setHeader('set-cookie', cookies);
+    const authJwt = upstream.headers.get('set-auth-jwt');
+    if (authJwt) res.setHeader('set-auth-jwt', authJwt);
     const location = upstream.headers.get('location');
     if (location) res.setHeader('location', location);
     res.end(bytes);
