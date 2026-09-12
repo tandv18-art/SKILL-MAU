@@ -66,7 +66,9 @@ async function main() {
   assert.equal((elements['faq-list'].innerHTML.match(/<details/g) || []).length, context.AIOS_TRANSLATIONS.vi.faq.items.length);
   assert.equal((elements.steps.innerHTML.match(/<article>/g) || []).length, 3);
   assert.ok(html.includes('AI THỰC CHIẾN • DỄ HIỂU • DỄ DÙNG'));
-  assert.ok(html.includes('<h1 data-i18n="hero.title">ACT</h1>'));
+  assert.ok(html.includes('data-i18n="hero.title"'));
+  assert.equal(context.AIOS_TRANSLATIONS.vi.hero.title, 'AI → Create → Results');
+  assert.equal(context.AIOS_TRANSLATIONS.en.hero.title, 'AI → Create → Results');
   assert.ok(!html.includes('AI KIẾN TẠO TƯƠNG LAI'));
   assert.ok(html.includes('Đơn giản hóa thế giới phức tạp cùng AI'));
   assert.equal((html.match(/class="hero-slide(?: |")/g) || []).length, 4);
