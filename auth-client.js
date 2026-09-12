@@ -20,6 +20,26 @@
     note.dataset.status = isError ? 'error' : 'info';
   }
 
+  function localizeAccountUi() {
+    const labels = {
+      home: '⌂ Trang chủ',
+      tools: '◇ Tất cả công cụ',
+      creations: '◫ Sản phẩm đã tạo',
+      usage: '◌ Mức sử dụng / Điểm',
+      billing: '▤ Thanh toán',
+      account: '○ Tài khoản',
+      help: '? Trợ giúp'
+    };
+    $$('#workspace-nav [data-workspace]').forEach(button => {
+      const label = labels[button.dataset.workspace];
+      if (label) button.textContent = label;
+    });
+    const workspaceCategory = $('#workspace-shell .skill-category');
+    if (workspaceCategory) workspaceCategory.textContent = 'KHÔNG GIAN LÀM VIỆC';
+    const authCategory = $('#auth-shell .skill-category');
+    if (authCategory) authCategory.textContent = 'TÀI KHOẢN TÔI LÀ AI';
+  }
+
   function rememberAuthSlots() {
     $$('[data-auth]').forEach(button => {
       if (!button.dataset.authSlot && (button.dataset.auth === 'login' || button.dataset.auth === 'signup')) button.dataset.authSlot = button.dataset.auth;
@@ -130,6 +150,7 @@
       form.innerHTML = `${field('Email', 'email', 'email', 'email', 'you@example.com', 'required')}${field(text('Mật khẩu', 'Password'), 'password', 'password', 'current-password', '', 'required minlength="8" maxlength="128"')}<label><span>${text('Ghi nhớ đăng nhập', 'Remember me')}</span><input name="rememberMe" type="checkbox" checked></label><button class="button" type="submit">${text('Đăng nhập', 'Sign in')}</button>`;
     }
     configureSwitches(authState.mode);
+    localizeAccountUi();
     window.openShell?.('auth-shell');
   }
 
@@ -204,35 +225,46 @@
   function renderWorkspace(section = 'home') {
     const user = authState.session?.user;
     if (!user) return openAuthReal('login');
+    localizeAccountUi();
     const workspaceTitle = $('#workspace-title');
-    if (workspaceTitle) workspaceTitle.textContent = section === 'account' ? text('Tài khoản', 'Account') : section === 'usage' ? text('Sử dụng / Credits', 'Usage / Credits') : section === 'billing' ? 'Billing' : section === 'creations' ? text('Sản phẩm đã tạo', 'My Creations') : section === 'tools' ? text('Công cụ', 'Tools') : section === 'help' ? text('Trợ giúp', 'Help') : 'Home';
+    const titles = {
+      home: 'Trang chủ',
+      tools: 'Tất cả công cụ',
+      creations: 'Sản phẩm đã tạo',
+      usage: 'Mức sử dụng / Điểm',
+      billing: 'Thanh toán',
+      account: 'Tài khoản',
+      help: 'Trợ giúp'
+    };
+    if (workspaceTitle) workspaceTitle.textContent = titles[section] || 'Trang chủ';
 
     if (section === 'account') {
-      workspaceCard([user.name || text('Tài khoản TÔI LÀ AI', 'TÔI LÀ AI account'), user.email || '', text('Phiên đăng nhập đang hoạt động.', 'Your session is active.')]);
+      workspaceCard([user.name || 'Tài khoản TÔI LÀ AI', user.email || '', 'Phiên đăng nhập đang hoạt động.']);
       const box = $('#workspace-content');
       const button = document.createElement('button');
       button.className = 'button button-outline';
       button.type = 'button';
       button.dataset.auth = 'change-password';
-      button.textContent = text('Đổi mật khẩu', 'Change password');
+      button.textContent = 'Đổi mật khẩu';
       box?.append(button);
     } else if (section === 'tools') {
-      workspaceCard([text('11 công cụ đang hoạt động', '11 active tools'), text('Mở mục Sản phẩm trên trang chính để sử dụng các công cụ đã được kiểm thử.', 'Use the Products section on the homepage to access tested tools.')]);
+      workspaceCard(['11 công cụ đang hoạt động', 'Mở mục Sản phẩm trên trang chính để sử dụng các công cụ đã được kiểm thử.']);
     } else if (section === 'creations') {
-      workspaceCard([text('Lịch sử kết quả', 'Creation history'), text('Chưa lưu lịch sử vào tài khoản.', 'Account history is not stored yet.')]);
+      workspaceCard(['Lịch sử kết quả', 'Chưa lưu lịch sử vào tài khoản.']);
     } else if (section === 'usage') {
-      workspaceCard([text('Usage / Credits', 'Usage / Credits'), text('Quota theo tài khoản sẽ được bật ở bước tiếp theo.', 'Per-account quota will be enabled in the next phase.')]);
+      workspaceCard(['Mức sử dụng / Điểm', 'Hạn mức theo tài khoản sẽ được bật ở bước tiếp theo.']);
     } else if (section === 'billing') {
-      workspaceCard([text('Thanh toán', 'Billing'), text('Billing chưa được kích hoạt cho tài khoản này.', 'Billing is not active for this account.')]);
+      workspaceCard(['Thanh toán', 'Thanh toán chưa được kích hoạt cho tài khoản này.']);
     } else if (section === 'help') {
-      workspaceCard([text('Hỗ trợ', 'Help'), 'admintoilaai@gmail.com']);
+      workspaceCard(['Hỗ trợ', 'admintoilaai@gmail.com']);
     } else {
-      workspaceCard([`${text('Xin chào', 'Hello')}, ${user.name || user.email}`, text('Tài khoản đã đăng nhập.', 'You are signed in.')]);
+      workspaceCard([`Xin chào, ${user.name || user.email}`, 'Tài khoản đã đăng nhập.']);
     }
   }
 
   function openWorkspace(section = 'home') {
     if (!authState.session?.user) return openAuthReal('login');
+    localizeAccountUi();
     renderWorkspace(section);
     window.openShell?.('workspace-shell');
   }
@@ -317,11 +349,19 @@
     }
   }, true);
 
-  $('#language')?.addEventListener('change', () => setTimeout(renderAuthNav, 0));
+  $('#language')?.addEventListener('change', () => {
+    setTimeout(() => {
+      renderAuthNav();
+      localizeAccountUi();
+      const activeWorkspace = $('#workspace-nav button.active')?.dataset.workspace;
+      if (authState.session?.user && activeWorkspace) renderWorkspace(activeWorkspace);
+    }, 0);
+  });
 
   window.openAuth = openAuthReal;
   window.toilaaiAuth = { hydrateSession, openAuth: openAuthReal, openWorkspace, getSession: () => authState.session };
   rememberAuthSlots();
+  localizeAccountUi();
 
   const params = new URLSearchParams(location.search);
   const verifier = params.get('neon_auth_session_verifier') || '';
