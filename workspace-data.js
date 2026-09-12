@@ -212,18 +212,34 @@
     update();
   }
 
+  function renderActiveWorkspaceData() {
+    const section = $('#workspace-nav button.active')?.dataset.workspace;
+    if (section === 'creations') renderCreations();
+    if (section === 'usage') renderUsage();
+    if (section === 'billing') renderBilling();
+  }
+
+  function observeWorkspaceNavigation() {
+    const nav = $('#workspace-nav');
+    if (!nav) return;
+    let pending = false;
+    new MutationObserver(() => {
+      if (pending) return;
+      pending = true;
+      queueMicrotask(() => {
+        pending = false;
+        renderActiveWorkspaceData();
+      });
+    }).observe(nav, { attributes: true, subtree: true, attributeFilter: ['class'] });
+  }
+
   document.addEventListener('click', event => {
     const skill = event.target.closest('[data-skill]');
     if (skill?.dataset.skill) activeSkillId = skill.dataset.skill;
-    const workspace = event.target.closest('[data-workspace]');
-    if (!workspace) return;
-    const section = workspace.dataset.workspace;
-    if (section === 'creations') setTimeout(renderCreations, 0);
-    if (section === 'usage') setTimeout(renderUsage, 0);
-    if (section === 'billing') setTimeout(renderBilling, 0);
   }, true);
 
   ensureStyles();
   observeResults();
+  observeWorkspaceNavigation();
   window.toilaaiWorkspace = { renderCreations, renderUsage, renderBilling };
 })();
