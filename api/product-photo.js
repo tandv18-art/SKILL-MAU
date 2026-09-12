@@ -1,2 +1,2 @@
-const { generateProductPhotos } = require('../lib/skill-runtime');
+const { generateProductPhotos } = require('../lib/image-storage-runtime');
 module.exports = generateProductPhotos;
