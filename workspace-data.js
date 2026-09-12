@@ -48,7 +48,7 @@
       .workspace-stat b{display:block;font-size:26px;margin-top:6px}.workspace-stat small,.workspace-row small{color:#8f9d96}
       .workspace-row{display:grid;gap:8px}.workspace-row-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
       .workspace-row pre{white-space:pre-wrap;max-height:220px;overflow:auto;margin:0;color:#dbe5df;font:500 13px/1.55 Manrope,sans-serif}
-      .workspace-thumbs{display:flex;gap:8px;overflow:auto}.workspace-thumbs img{width:96px;height:72px;object-fit:cover;border-radius:10px;border:1px solid rgba(255,255,255,.1)}
+      .workspace-thumbs{display:flex;gap:8px;overflow:auto}.workspace-thumb-button{display:block;padding:0;border:0;background:transparent;border-radius:10px;line-height:0;cursor:zoom-in}.workspace-thumb-button:focus-visible{outline:2px solid #d3ff4a;outline-offset:3px}.workspace-thumbs img{width:96px;height:72px;object-fit:cover;border-radius:10px;border:1px solid rgba(255,255,255,.1);cursor:zoom-in}
       .workspace-badge{display:inline-flex;width:max-content;border:1px solid rgba(211,255,74,.35);color:#d3ff4a;border-radius:999px;padding:4px 9px;font-size:11px;font-weight:700}
       .workspace-note{color:#9ca9a2;font-size:13px;line-height:1.6}.workspace-actions{display:flex;gap:10px;flex-wrap:wrap}
       @media(max-width:760px){.workspace-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.workspace-row-head{align-items:flex-start;flex-direction:column}}
@@ -122,7 +122,20 @@
           const urls = Array.isArray(row.image_urls) ? row.image_urls.map(normalizeImageRef).filter(Boolean) : [];
           if (urls.length) {
             const thumbs = document.createElement('div'); thumbs.className = 'workspace-thumbs';
-            urls.forEach(url => { const img = document.createElement('img'); img.src = url; img.alt = row.title || 'Ảnh đã tạo'; img.loading = 'lazy'; thumbs.append(img); });
+            urls.forEach((url, index) => {
+              const button = document.createElement('button');
+              button.type = 'button';
+              button.className = 'workspace-thumb-button';
+              button.setAttribute('aria-label', `Xem ảnh ${index + 1}`);
+              button.title = 'Bấm để xem ảnh';
+              const img = document.createElement('img');
+              img.src = url;
+              img.alt = row.title || 'Ảnh đã tạo';
+              img.loading = 'lazy';
+              button.append(img);
+              button.addEventListener('click', () => window.open(url, '_blank', 'noopener,noreferrer'));
+              thumbs.append(button);
+            });
             card.append(thumbs);
           } else {
             const note = document.createElement('div'); note.className = 'workspace-note'; note.textContent = `Đã ghi nhận ${Number(row.metadata?.imageCount) || 1} ảnh. Tệp ảnh chưa được lưu dài hạn.`; card.append(note);
