@@ -41,15 +41,27 @@
     const title = $('#checkout-title');
     if (title) title.textContent = 'Thanh toán an toàn';
     if (!grid) return;
+
+    grid.style.gridTemplateColumns = '1fr';
     grid.innerHTML = '';
+
     const button = document.createElement('button');
     button.type = 'button';
     button.dataset.checkoutPayos = 'true';
     button.disabled = !CHECKOUT_LIVE_ENABLED;
-    button.innerHTML = '<b>PayOS / VietQR</b><span>Chuyển khoản QR ngân hàng</span>';
+    button.style.display = 'grid';
+    button.style.gap = '3px';
+    button.style.textAlign = 'left';
+    button.style.opacity = CHECKOUT_LIVE_ENABLED ? '1' : '.72';
+    button.style.cursor = CHECKOUT_LIVE_ENABLED ? 'pointer' : 'not-allowed';
+    button.innerHTML = '<b>PayOS / VietQR</b><span style="font-size:10px;color:#91a098">Chuyển khoản QR ngân hàng</span>';
     grid.append(button);
 
     let status = $('#checkout-status');
+    if (!status) {
+      status = $('.checkout-card > .shell-note');
+      if (status) status.id = 'checkout-status';
+    }
     if (!status) {
       status = document.createElement('p');
       status.id = 'checkout-status';
