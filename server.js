@@ -1,6 +1,7 @@
 const http = require('node:http');
 const fs = require('node:fs/promises');
 const path = require('node:path');
+const { proxyAuth } = require('./auth-proxy');
 
 const PORT = Number(process.env.PORT || 4173);
 const MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
@@ -10,6 +11,7 @@ const PUBLIC_FILES = new Map([
   ['/index.html', ['index.html', 'text/html; charset=utf-8']],
   ['/styles.css', ['styles.css', 'text/css; charset=utf-8']],
   ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
+  ['/auth-client.js', ['auth-client.js', 'text/javascript; charset=utf-8']],
   ['/i18n.js', ['i18n.js', 'text/javascript; charset=utf-8']],
   ['/skills-data.js', ['skills-data.js', 'text/javascript; charset=utf-8']],
   ['/pricing-config.js', ['pricing-config.js', 'text/javascript; charset=utf-8']]
@@ -161,6 +163,7 @@ async function runTextSkill(req, res) {
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://localhost');
+    if (url.pathname.startsWith('/api/auth/')) return await proxyAuth(req, res, url);
     if (req.method === 'POST' && url.pathname === '/api/product-photo') return await generateProductPhotos(req, res);
     if (req.method === 'POST' && url.pathname === '/api/world-checkin') return await generateWorldCheckin(req, res);
     if (req.method === 'POST' && url.pathname === '/api/premium-portrait-enhancer') return await generatePortrait(req, res);
