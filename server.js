@@ -10,6 +10,7 @@ const PUBLIC_FILES = new Map([
   ['/index.html', ['index.html', 'text/html; charset=utf-8']],
   ['/styles.css', ['styles.css', 'text/css; charset=utf-8']],
   ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
+  ['/auth-client.js', ['auth-client.js', 'text/javascript; charset=utf-8']],
   ['/i18n.js', ['i18n.js', 'text/javascript; charset=utf-8']],
   ['/skills-data.js', ['skills-data.js', 'text/javascript; charset=utf-8']],
   ['/pricing-config.js', ['pricing-config.js', 'text/javascript; charset=utf-8']]
