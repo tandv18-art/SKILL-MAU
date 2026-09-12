@@ -50,8 +50,7 @@
       mode: 'cors',
       credentials: 'include',
       headers: method === 'POST' ? { 'content-type': 'application/json' } : undefined,
-      body: method === 'POST' ? JSON.stringify(options.body || {}) : undefined,
-      redirect: 'manual'
+      body: method === 'POST' ? JSON.stringify(options.body || {}) : undefined
     });
     const payload = await response.json().catch(() => null);
     if (!response.ok) {
