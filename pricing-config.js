@@ -9,12 +9,12 @@ window.AIOS_PRICING = [
 
 (() => {
   const checkout = document.createElement('script');
-  checkout.src = '/checkout-runtime.js?v=web21';
+  checkout.src = '/checkout-runtime.js?v=web21-final-quota';
   checkout.async = false;
   document.head.append(checkout);
 
   const quota = document.createElement('script');
-  quota.src = '/quota-ui.js?v=web21';
+  quota.src = '/quota-ui.js?v=web21-final-quota';
   quota.async = false;
   document.head.append(quota);
 })();
