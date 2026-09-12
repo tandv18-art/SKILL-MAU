@@ -1,6 +1,11 @@
 const state = { lang: 'vi', filter: 'all', activeSkill: null, showAll: false, selectedImageUrls: {}, viewerImages: [], viewerIndex: 0, viewerScale: 1, selectedPlan: null };
 const REAL_TEXT_SKILLS = new Set(['facebook-post','tiktok-reel-post','multi-platform-product-description','long-to-short-post','thirty-day-content-plan','poster-thumbnail-brief','social-ad-creative-brief']);
 const IMAGE_ENDPOINTS = { 'product-photo':'/api/product-photo', 'world-checkin':'/api/world-checkin', 'premium-portrait-enhancer':'/api/premium-portrait-enhancer', 'virtual-tryon':'/api/virtual-tryon' };
+const PUBLIC_SKILL_IDS = Object.freeze(['product-photo','world-checkin','premium-portrait-enhancer','virtual-tryon','facebook-post','tiktok-reel-post','multi-platform-product-description','long-to-short-post','thirty-day-content-plan','poster-thumbnail-brief','social-ad-creative-brief']);
+window.PUBLIC_SKILL_IDS = PUBLIC_SKILL_IDS;
+const PUBLIC_SKILL_ID_SET = new Set(PUBLIC_SKILL_IDS);
+let heroSlideIndex = 0;
+let heroSlideTimer;
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const t = (path) => path.split('.').reduce((value, key) => value?.[key], window.AIOS_TRANSLATIONS[state.lang]);
@@ -16,15 +21,15 @@ function applyTranslations() {
 }
 
 function renderCategories() {
-  const categories = [...new Set(window.AIOS_SKILLS.map(skill => skill.category)), 'all'];
+  const categories = ['seller', 'content', 'photo', 'work', 'all'];
   $('#category-row').innerHTML = categories.map(key => `<button class="category-chip ${state.filter === key ? 'active' : ''}" type="button" data-filter="${key}">${t(`skills.${key}`)}</button>`).join('');
 }
 
 function renderSkills() {
-  const skills = window.AIOS_SKILLS.filter(skill => state.filter === 'all' ? (state.showAll || skill.featured) : skill.category === state.filter);
+  const skills = window.AIOS_SKILLS.filter(skill => PUBLIC_SKILL_ID_SET.has(skill.id) && (state.filter === 'all' || skill.category === state.filter));
   const categoryIcons = { seller:'▣', content:'✦', photo:'◫', work:'✓' };
   $('#skill-grid').innerHTML = skills.map(skill => `<article class="skill-card"><div class="skill-card-top"><span class="skill-icon ${skill.category}">${categoryIcons[skill.category]}</span><span class="skill-type">${t(`skills.${skill.category}`)}</span></div><h3>${state.lang === 'vi' ? skill.titleVi : skill.titleEn}</h3><p>${state.lang === 'vi' ? skill.benefitVi : skill.benefitEn}</p><button class="text-button" data-skill="${skill.id}">${t('skills.open')} <span>→</span></button></article>`).join('');
-  $('#show-all-skills').hidden = state.showAll;
+  $('#show-all-skills').hidden = true;
 }
 
 function renderSteps() { $('#steps').innerHTML = t('how.steps').map(step => `<article><span>${step[0]}</span><h3>${step[1]}</h3><p>${step[2]}</p></article>`).join(''); }
@@ -36,6 +41,20 @@ function renderFaq() {
   const items = t('faq.items') || [];
   $('#faq-list').innerHTML = items.map((item, i) => `<details ${i === 0 ? 'open' : ''}><summary>${item[0]}<span aria-hidden="true">${i === 0 ? '−' : '+'}</span></summary><p>${item[1]}</p></details>`).join('');
   $$('#faq-list details').forEach(details => details.addEventListener('toggle', () => { $('summary span', details).textContent = details.open ? '−' : '+'; }));
+}
+
+function showHeroSlide(index) {
+  const slides = $$('.hero-slide');
+  const dots = $$('[data-slide-to]');
+  if (!slides.length) return;
+  heroSlideIndex = (index + slides.length) % slides.length;
+  slides.forEach((slide, position) => { const active = position === heroSlideIndex; slide.classList.toggle('is-active', active); slide.setAttribute('aria-hidden', String(!active)); });
+  dots.forEach((dot, position) => { const active = position === heroSlideIndex; dot.classList.toggle('is-active', active); dot.setAttribute('aria-current', active ? 'true' : 'false'); });
+}
+function scheduleHeroSlide() {
+  clearTimeout(heroSlideTimer);
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || !$$('.hero-slide').length) return;
+  heroSlideTimer = setTimeout(() => { showHeroSlide(heroSlideIndex + 1); scheduleHeroSlide(); }, 6500);
 }
 
 function openSkill(id) {
@@ -68,18 +87,20 @@ function updateViewer() { const src = state.viewerImages[state.viewerIndex]; if 
 function viewerAction(action) { if (action === 'close') { $('#image-viewer').classList.remove('open'); $('#image-viewer').setAttribute('aria-hidden','true'); document.body.classList.remove('modal-open'); return; } if (action === 'next') state.viewerIndex = (state.viewerIndex + 1) % state.viewerImages.length; if (action === 'prev') state.viewerIndex = (state.viewerIndex - 1 + state.viewerImages.length) % state.viewerImages.length; if (action === 'zoom-in') state.viewerScale = Math.min(4, state.viewerScale + .25); if (action === 'zoom-out') state.viewerScale = Math.max(.5, state.viewerScale - .25); if (action === 'reset') state.viewerScale = 1; updateViewer(); }
 function openShell(id) { $$('.shell-overlay.open').forEach(shell => shell.classList.remove('open')); const shell = $(`#${id}`); shell.classList.add('open'); shell.setAttribute('aria-hidden','false'); document.body.classList.add('modal-open'); }
 function closeShells() { $$('.shell-overlay.open').forEach(shell => { shell.classList.remove('open'); shell.setAttribute('aria-hidden','true'); }); document.body.classList.remove('modal-open'); }
-function openAuth(mode) { const copy = { login:['Đăng nhập','Tiếp tục vào không gian làm việc AIOS Lab.'], signup:['Tạo tài khoản','Bắt đầu với AIOS Lab.'], forgot:['Khôi phục mật khẩu','Nhập email để nhận hướng dẫn đặt lại mật khẩu.'], verify:['Xác minh email','Kiểm tra hộp thư và xác minh địa chỉ email của bạn.'] }; const value = copy[mode] || copy.login; $('#auth-title').textContent = value[0]; $('#auth-copy').textContent = value[1]; $('#password-field').hidden = ['forgot','verify'].includes(mode); openShell('auth-shell'); }
+function openAuth(mode) { const copy = { login:['Đăng nhập','Tiếp tục vào không gian làm việc TÔI LÀ AI.'], signup:['Tạo tài khoản','Bắt đầu với TÔI LÀ AI.'], forgot:['Khôi phục mật khẩu','Nhập email để nhận hướng dẫn đặt lại mật khẩu.'], verify:['Xác minh email','Kiểm tra hộp thư và xác minh địa chỉ email của bạn.'] }; const value = copy[mode] || copy.login; $('#auth-title').textContent = value[0]; $('#auth-copy').textContent = value[1]; $('#password-field').hidden = ['forgot','verify'].includes(mode); openShell('auth-shell'); }
 function openCheckout(planId) { const plan = window.AIOS_PRICING.find(item => item.id === planId); if (!plan) return; state.selectedPlan = plan; $('#checkout-plan').innerHTML = `<b>${plan.name}</b><strong>${plan.price}${plan.billingPeriod ? ` ${t('pricing.month')}` : ''}</strong>`; openShell('checkout-shell'); }
-const shellContent = { help:['Trợ giúp','Khám phá công cụ, quản lý yêu cầu hoặc liên hệ đội ngũ AIOS Lab.'], contact:['Liên hệ','Email: support@aioslab.vn'], terms:['Điều khoản','Các điều khoản sử dụng dịch vụ AIOS Lab.'], privacy:['Quyền riêng tư','Thông tin về cách AIOS Lab bảo vệ dữ liệu và quyền riêng tư.'], payment:['Thanh toán','Thông tin về phương thức và trạng thái thanh toán.'], refund:['Hoàn tiền','Chính sách và điều kiện yêu cầu hoàn tiền.'], cancellation:['Hủy / Gia hạn','Quản lý chu kỳ và lựa chọn gia hạn dịch vụ.'], policy:['Chính sách sử dụng AI','Nguyên tắc sử dụng công cụ AI an toàn và có trách nhiệm.'] };
+const shellContent = { help:['Trợ giúp','Khám phá công cụ, quản lý yêu cầu hoặc liên hệ đội ngũ TÔI LÀ AI.'], contact:['Liên hệ','Email: admintoilaai@gmail.com'], terms:['Điều khoản','Các điều khoản sử dụng dịch vụ TÔI LÀ AI.'], privacy:['Quyền riêng tư','Thông tin về cách TÔI LÀ AI bảo vệ dữ liệu và quyền riêng tư.'], payment:['Thanh toán','Thông tin về phương thức và trạng thái thanh toán.'], refund:['Hoàn tiền','Chính sách và điều kiện yêu cầu hoàn tiền.'], cancellation:['Hủy / Gia hạn','Quản lý chu kỳ và lựa chọn gia hạn dịch vụ.'], policy:['Chính sách sử dụng AI','Nguyên tắc sử dụng công cụ AI an toàn và có trách nhiệm.'] };
 document.addEventListener('click', event => {
+  const sliderArrow = event.target.closest('[data-slider]'); if (sliderArrow) { showHeroSlide(heroSlideIndex + (sliderArrow.dataset.slider === 'next' ? 1 : -1)); scheduleHeroSlide(); }
+  const sliderDot = event.target.closest('[data-slide-to]'); if (sliderDot) { showHeroSlide(Number(sliderDot.dataset.slideTo)); scheduleHeroSlide(); }
   const showAll = event.target.closest('#show-all-skills'); if (showAll) { state.filter = 'all'; state.showAll = true; renderCategories(); renderSkills(); }
   const filter = event.target.closest('[data-filter]'); if (filter) { state.filter = filter.dataset.filter; state.showAll = true; renderCategories(); renderSkills(); $('#skills').scrollIntoView({behavior:'smooth'}); }
   const skill = event.target.closest('[data-skill]'); if (skill) openSkill(skill.dataset.skill);
   const plan = event.target.closest('[data-plan]'); if (plan) openCheckout(plan.dataset.plan);
   const auth = event.target.closest('[data-auth]'); if (auth) openAuth(auth.dataset.auth);
-  if (event.target.closest('[data-open-workspace]')) { $('#workspace-content').innerHTML = '<div class="workspace-empty"><span>✦</span><b>AIOS Workspace</b><p>Chọn một mục để bắt đầu.</p></div>'; openShell('workspace-shell'); }
+  if (event.target.closest('[data-open-workspace]')) { $('#workspace-content').innerHTML = '<div class="workspace-empty"><span>✦</span><b>TÔI LÀ AI Workspace</b><p>Chọn một mục để bắt đầu.</p></div>'; openShell('workspace-shell'); }
   const shell = event.target.closest('[data-shell]'); if (shell) { const content = shellContent[shell.dataset.shell]; if (content) { $('#content-shell-title').textContent = content[0]; $('#content-shell-body').innerHTML = `<p>${content[1]}</p>`; openShell('content-shell'); } }
-  const workspace = event.target.closest('[data-workspace]'); if (workspace) { $$('#workspace-nav button').forEach(button => button.classList.toggle('active', button === workspace)); $('#workspace-title').textContent = workspace.textContent.replace(/^[^A-Za-zÀ-ỹ]+/, ''); $('#workspace-content').innerHTML = `<div class="workspace-empty"><span>✦</span><b>${workspace.textContent}</b><p>Không gian quản lý tập trung của AIOS Lab.</p></div>`; }
+  const workspace = event.target.closest('[data-workspace]'); if (workspace) { $$('#workspace-nav button').forEach(button => button.classList.toggle('active', button === workspace)); $('#workspace-title').textContent = workspace.textContent.replace(/^[^A-Za-zÀ-ỹ]+/, ''); $('#workspace-content').innerHTML = `<div class="workspace-empty"><span>✦</span><b>${workspace.textContent}</b><p>Không gian quản lý tập trung của TÔI LÀ AI.</p></div>`; }
   const imageAction = event.target.closest('[data-image-action]'); if (imageAction?.dataset.imageAction === 'replace') $(`[data-image-input="${imageAction.dataset.imageKey}"]`)?.click(); if (imageAction?.dataset.imageAction === 'remove') clearSelectedImage(imageAction.dataset.imageKey);
   const viewerImage = event.target.closest('[data-viewer-index]'); if (viewerImage) openViewer(Number(viewerImage.dataset.viewerIndex));
   const viewerControl = event.target.closest('[data-viewer]'); if (viewerControl) viewerAction(viewerControl.dataset.viewer);
@@ -108,3 +129,10 @@ $('#skill-form').addEventListener('submit', async event => {
 $('#image-viewer').addEventListener('wheel', event => { event.preventDefault(); state.viewerScale = Math.max(.5, Math.min(4, state.viewerScale + (event.deltaY < 0 ? .15 : -.15))); updateViewer(); }, {passive:false});
 document.addEventListener('keydown', event => { if ($('#image-viewer').classList.contains('open')) { if (event.key === 'ArrowRight') viewerAction('next'); if (event.key === 'ArrowLeft') viewerAction('prev'); if (event.key === '+' || event.key === '=') viewerAction('zoom-in'); if (event.key === '-') viewerAction('zoom-out'); if (event.key === 'Escape') viewerAction('close'); return; } if (event.key === 'Escape') { closeModal(); closeShells(); } });
 applyTranslations();
+showHeroSlide(0);
+scheduleHeroSlide();
+const heroShowcase = $('[data-hero-showcase]');
+if (heroShowcase) {
+  heroShowcase.addEventListener('mouseenter', () => clearTimeout(heroSlideTimer));
+  heroShowcase.addEventListener('mouseleave', scheduleHeroSlide);
+}
