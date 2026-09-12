@@ -89,6 +89,18 @@
     return Number.isNaN(date.getTime()) ? '' : new Intl.DateTimeFormat('vi-VN', { dateStyle: 'short', timeStyle: 'short' }).format(date);
   }
 
+  function normalizeImageRef(value) {
+    const raw = String(value || '').trim();
+    if (!raw) return null;
+    if (raw.startsWith('/api/media?')) return raw;
+    try {
+      const parsed = new URL(raw, window.location.origin);
+      if (parsed.pathname === '/api/media') return `${parsed.pathname}${parsed.search}`;
+      if (parsed.protocol === 'https:') return parsed.toString();
+    } catch {}
+    return null;
+  }
+
   async function renderCreations() {
     loading();
     try {
@@ -107,13 +119,13 @@
         if (row.kind === 'text' && row.output_text) {
           const pre = document.createElement('pre'); pre.textContent = row.output_text; card.append(pre);
         } else if (row.kind === 'image') {
-          const urls = Array.isArray(row.image_urls) ? row.image_urls.filter(url => /^https:\/\//i.test(String(url))) : [];
+          const urls = Array.isArray(row.image_urls) ? row.image_urls.map(normalizeImageRef).filter(Boolean) : [];
           if (urls.length) {
             const thumbs = document.createElement('div'); thumbs.className = 'workspace-thumbs';
             urls.forEach(url => { const img = document.createElement('img'); img.src = url; img.alt = row.title || 'Ảnh đã tạo'; img.loading = 'lazy'; thumbs.append(img); });
             card.append(thumbs);
           } else {
-            const note = document.createElement('div'); note.className = 'workspace-note'; note.textContent = `Đã ghi nhận ${Number(row.metadata?.imageCount) || 1} ảnh. Tệp ảnh dài hạn sẽ được bật ở bước lưu trữ media.`; card.append(note);
+            const note = document.createElement('div'); note.className = 'workspace-note'; note.textContent = `Đã ghi nhận ${Number(row.metadata?.imageCount) || 1} ảnh. Tệp ảnh chưa được lưu dài hạn.`; card.append(note);
           }
         }
         wrap.append(card);
@@ -186,7 +198,7 @@
     if (kind === 'text') body.output_text = $('pre.text-result', result)?.textContent || '';
     if (kind === 'image') {
       const allImages = $$('img[src]', result);
-      body.image_urls = allImages.map(img => img.src).filter(url => /^https:\/\//i.test(url)).slice(0,8);
+      body.image_urls = allImages.map(img => normalizeImageRef(img.getAttribute('src') || img.src)).filter(Boolean).slice(0,8);
       body.metadata = { imageCount: allImages.length, persistedImageCount: body.image_urls.length };
     }
     recording = true;
