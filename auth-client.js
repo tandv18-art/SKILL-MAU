@@ -1,5 +1,4 @@
 (() => {
-  const AUTH_BASE_URL = 'https://ep-rough-fire-auhjgose.neonauth.c-10.us-east-1.aws.neon.tech/toilaai_main/auth';
   const authState = { session: null, mode: 'login', resetToken: null, busy: false };
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -45,10 +44,12 @@
 
   async function authRequest(path, options = {}) {
     const method = options.method || 'GET';
-    const response = await fetch(`${AUTH_BASE_URL}/${path}`, {
+    const url = new URL('/api/auth', location.origin);
+    url.searchParams.set('path', path);
+    if (options.verifier) url.searchParams.set('neon_auth_session_verifier', options.verifier);
+    const response = await fetch(url, {
       method,
-      mode: 'cors',
-      credentials: 'include',
+      credentials: 'same-origin',
       headers: method === 'POST' ? { 'content-type': 'application/json' } : undefined,
       body: method === 'POST' ? JSON.stringify(options.body || {}) : undefined
     });
@@ -70,7 +71,11 @@
     const first = switchButtons[0];
     const second = switchButtons[1];
     if (!first || !second) return;
-    [first, second].forEach(button => { button.hidden = false; button.removeAttribute('data-open-workspace'); button.removeAttribute('data-auth'); });
+    [first, second].forEach(button => {
+      button.hidden = false;
+      button.removeAttribute('data-open-workspace');
+      button.removeAttribute('data-auth');
+    });
 
     if (mode === 'login') {
       first.dataset.auth = 'forgot'; first.textContent = text('Quên mật khẩu?', 'Forgot password?');
@@ -134,7 +139,15 @@
     if (googleButton) googleButton.disabled = true;
     setNote(text('Đang mở Google…', 'Opening Google…'));
     try {
-      const payload = await authRequest('sign-in/social', { method: 'POST', body: { provider: 'google', callbackURL: `${location.origin}/`, errorCallbackURL: `${location.origin}/?auth=error`, newUserCallbackURL: `${location.origin}/` } });
+      const payload = await authRequest('sign-in/social', {
+        method: 'POST',
+        body: {
+          provider: 'google',
+          callbackURL: `${location.origin}/`,
+          errorCallbackURL: `${location.origin}/?auth=error`,
+          newUserCallbackURL: `${location.origin}/`
+        }
+      });
       if (!payload?.url) throw new Error(text('Không nhận được liên kết đăng nhập Google.', 'Google sign-in did not return a redirect URL.'));
       location.assign(payload.url);
     } catch (error) {
@@ -144,9 +157,9 @@
     }
   }
 
-  async function hydrateSession() {
+  async function hydrateSession(verifier = '') {
     try {
-      const data = await authRequest('get-session');
+      const data = await authRequest('get-session', verifier ? { verifier } : {});
       authState.session = data?.user ? data : null;
     } catch {
       authState.session = null;
@@ -195,7 +208,7 @@
     if (workspaceTitle) workspaceTitle.textContent = section === 'account' ? text('Tài khoản', 'Account') : section === 'usage' ? text('Sử dụng / Credits', 'Usage / Credits') : section === 'billing' ? 'Billing' : section === 'creations' ? text('Sản phẩm đã tạo', 'My Creations') : section === 'tools' ? text('Công cụ', 'Tools') : section === 'help' ? text('Trợ giúp', 'Help') : 'Home';
 
     if (section === 'account') {
-      workspaceCard([user.name || text('Tài khoản TÔI LÀ AI', 'TÔI LÀ AI account'), user.email || '', text('Phiên đăng nhập đang hoạt động và được Neon Auth bảo vệ.', 'Your session is active and protected by Neon Auth.')]);
+      workspaceCard([user.name || text('Tài khoản TÔI LÀ AI', 'TÔI LÀ AI account'), user.email || '', text('Phiên đăng nhập đang hoạt động.', 'Your session is active.')]);
       const box = $('#workspace-content');
       const button = document.createElement('button');
       button.className = 'button button-outline';
@@ -206,15 +219,15 @@
     } else if (section === 'tools') {
       workspaceCard([text('11 công cụ đang hoạt động', '11 active tools'), text('Mở mục Sản phẩm trên trang chính để sử dụng các công cụ đã được kiểm thử.', 'Use the Products section on the homepage to access tested tools.')]);
     } else if (section === 'creations') {
-      workspaceCard([text('Lịch sử kết quả', 'Creation history'), text('Chưa lưu lịch sử vào tài khoản. Tính năng này sẽ chỉ bật sau khi có quota và lưu trữ an toàn.', 'Account history is not stored yet. It will only be enabled with safe storage and quota controls.')]);
+      workspaceCard([text('Lịch sử kết quả', 'Creation history'), text('Chưa lưu lịch sử vào tài khoản.', 'Account history is not stored yet.')]);
     } else if (section === 'usage') {
-      workspaceCard([text('Usage / Credits', 'Usage / Credits'), text('Chưa áp dụng quota theo tài khoản trong bản Auth này; hệ thống không hiển thị số credits giả.', 'Per-account quota is not enabled in this Auth release; no fake credit balance is shown.')]);
+      workspaceCard([text('Usage / Credits', 'Usage / Credits'), text('Quota theo tài khoản sẽ được bật ở bước tiếp theo.', 'Per-account quota will be enabled in the next phase.')]);
     } else if (section === 'billing') {
-      workspaceCard([text('Thanh toán', 'Billing'), text('Billing chưa được kích hoạt cho tài khoản này. Không có khoản thu tự động từ màn hình này.', 'Billing is not active for this account. No automatic charge can be made from this screen.')]);
+      workspaceCard([text('Thanh toán', 'Billing'), text('Billing chưa được kích hoạt cho tài khoản này.', 'Billing is not active for this account.')]);
     } else if (section === 'help') {
       workspaceCard([text('Hỗ trợ', 'Help'), 'admintoilaai@gmail.com']);
     } else {
-      workspaceCard([`${text('Xin chào', 'Hello')}, ${user.name || user.email}`, text('Tài khoản đã đăng nhập. Bạn có thể dùng các công cụ public hiện có và quản lý bảo mật tài khoản.', 'You are signed in. You can use the current public tools and manage account security.')]);
+      workspaceCard([`${text('Xin chào', 'Hello')}, ${user.name || user.email}`, text('Tài khoản đã đăng nhập.', 'You are signed in.')]);
     }
   }
 
@@ -238,7 +251,6 @@
       if (authState.mode === 'signup') {
         await authRequest('sign-up/email', { method: 'POST', body: { name: String(data.get('name') || '').trim(), email: String(data.get('email') || '').trim(), password: String(data.get('password') || ''), callbackURL: `${location.origin}/` } });
         await hydrateSession();
-        setNote(text('Tài khoản đã được tạo.', 'Account created.'));
         window.closeShells?.();
       } else if (authState.mode === 'forgot') {
         await authRequest('request-password-reset', { method: 'POST', body: { email: String(data.get('email') || '').trim(), redirectTo: `${location.origin}/?auth=reset` } });
@@ -270,7 +282,11 @@
     if (event.target === form) handleSubmit(event);
   }, true);
 
-  googleButton?.addEventListener('click', event => { event.preventDefault(); event.stopImmediatePropagation(); signInGoogle(); }, true);
+  googleButton?.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    signInGoogle();
+  }, true);
 
   document.addEventListener('click', event => {
     const authButton = event.target.closest('[data-auth]');
@@ -306,8 +322,26 @@
   window.openAuth = openAuthReal;
   window.toilaaiAuth = { hydrateSession, openAuth: openAuthReal, openWorkspace, getSession: () => authState.session };
   rememberAuthSlots();
+
   const params = new URLSearchParams(location.search);
+  const verifier = params.get('neon_auth_session_verifier') || '';
   if (params.get('auth') === 'reset' && params.get('token')) authState.resetToken = params.get('token');
   if (params.get('auth') === 'error') setTimeout(() => { openAuthReal('login'); setNote(text('Đăng nhập Google chưa hoàn tất. Vui lòng thử lại.', 'Google sign-in did not complete. Please try again.'), true); }, 0);
-  hydrateSession().finally(() => { if (authState.resetToken) openAuthReal('reset'); });
+
+  (async () => {
+    if (verifier) {
+      const session = await hydrateSession(verifier);
+      const clean = new URL(location.href);
+      clean.searchParams.delete('neon_auth_session_verifier');
+      clean.searchParams.delete('auth');
+      history.replaceState({}, '', `${clean.pathname}${clean.search}${clean.hash}`);
+      if (!session?.user) {
+        openAuthReal('login');
+        setNote(text('Không thể hoàn tất phiên đăng nhập Google. Vui lòng thử lại.', 'Could not complete the Google session. Please try again.'), true);
+      }
+    } else {
+      await hydrateSession();
+    }
+    if (authState.resetToken) openAuthReal('reset');
+  })();
 })();
