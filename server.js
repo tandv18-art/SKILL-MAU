@@ -1,7 +1,6 @@
 const http = require('node:http');
 const fs = require('node:fs/promises');
 const path = require('node:path');
-const { proxyAuth } = require('./auth-proxy');
 
 const PORT = Number(process.env.PORT || 4173);
 const MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
@@ -163,7 +162,6 @@ async function runTextSkill(req, res) {
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://localhost');
-    if (url.pathname.startsWith('/api/auth/')) return await proxyAuth(req, res, url);
     if (req.method === 'POST' && url.pathname === '/api/product-photo') return await generateProductPhotos(req, res);
     if (req.method === 'POST' && url.pathname === '/api/world-checkin') return await generateWorldCheckin(req, res);
     if (req.method === 'POST' && url.pathname === '/api/premium-portrait-enhancer') return await generatePortrait(req, res);
