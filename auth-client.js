@@ -1,6 +1,6 @@
 (() => {
-  const NEON_AUTH_PUBLIC_BASE_URL = 'https://ep-rough-fire-auhjgose.neonauth.c-10.us-east-1.aws.neon.tech/toilaai_main/auth';
-  const authState = { session: null, sessionSource: null, mode: 'login', resetToken: null, busy: false };
+  const AUTH_BASE_URL = 'https://ep-rough-fire-auhjgose.neonauth.c-10.us-east-1.aws.neon.tech/toilaai_main/auth';
+  const authState = { session: null, mode: 'login', resetToken: null, busy: false };
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const form = $('#auth-form');
@@ -45,11 +45,13 @@
 
   async function authRequest(path, options = {}) {
     const method = options.method || 'GET';
-    const response = await fetch(`/api/auth/${path}`, {
+    const response = await fetch(`${AUTH_BASE_URL}/${path}`, {
       method,
-      credentials: 'same-origin',
+      mode: 'cors',
+      credentials: 'include',
       headers: method === 'POST' ? { 'content-type': 'application/json' } : undefined,
-      body: method === 'POST' ? JSON.stringify(options.body || {}) : undefined
+      body: method === 'POST' ? JSON.stringify(options.body || {}) : undefined,
+      redirect: 'manual'
     });
     const payload = await response.json().catch(() => null);
     if (!response.ok) {
@@ -59,50 +61,6 @@
       throw error;
     }
     return payload;
-  }
-
-  async function directAuthRequest(path, options = {}) {
-    const method = options.method || 'GET';
-    const response = await fetch(`${NEON_AUTH_PUBLIC_BASE_URL}/${path}`, {
-      method,
-      mode: 'cors',
-      credentials: 'include',
-      headers: method === 'POST' ? { 'content-type': 'application/json' } : undefined,
-      body: method === 'POST' ? JSON.stringify(options.body || {}) : undefined
-    });
-    const payload = await response.json().catch(() => null);
-    if (!response.ok) {
-      const message = payload?.message || payload?.error || text('Đăng nhập Google không thành công.', 'Google sign-in failed.');
-      const error = new Error(message);
-      error.status = response.status;
-      throw error;
-    }
-    return payload;
-  }
-
-  async function startGoogleSignIn() {
-    if (authState.busy) return;
-    authState.busy = true;
-    if (googleButton) googleButton.disabled = true;
-    setNote(text('Đang mở đăng nhập Google…', 'Opening Google sign-in…'));
-    try {
-      const payload = await directAuthRequest('sign-in/social', {
-        method: 'POST',
-        body: {
-          provider: 'google',
-          callbackURL: `${location.origin}/?auth=google`,
-          errorCallbackURL: `${location.origin}/?auth=google-error`,
-          newUserCallbackURL: `${location.origin}/?auth=google`,
-          disableRedirect: true
-        }
-      });
-      if (!payload?.url || typeof payload.url !== 'string') throw new Error(text('Google chưa trả về liên kết đăng nhập.', 'Google did not return a sign-in URL.'));
-      location.assign(payload.url);
-    } catch (error) {
-      authState.busy = false;
-      if (googleButton) googleButton.disabled = false;
-      setNote(error.message, true);
-    }
   }
 
   function field(label, name, type, autocomplete, placeholder = '', extra = '') {
@@ -130,87 +88,82 @@
     }
   }
 
-  function configureGoogle(mode) {
-    const show = mode === 'login' || mode === 'signup';
-    if (googleButton) {
-      googleButton.hidden = !show;
-      googleButton.disabled = false;
-      googleButton.textContent = text('G   Tiếp tục với Google', 'G   Continue with Google');
-    }
-    if (divider) divider.hidden = !show;
-  }
-
   function openAuthReal(mode = 'login') {
     if (mode === 'account') return openWorkspace('account');
     if (mode === 'logout') return signOut();
     if (mode === 'change-password' && !authState.session?.user) mode = 'login';
     authState.mode = mode;
-    configureGoogle(mode);
+    if (googleButton) googleButton.hidden = false;
+    if (divider) divider.hidden = false;
     setNote('');
 
     if (mode === 'signup') {
       title.textContent = text('Tạo tài khoản', 'Create account');
-      copy.textContent = text('Đăng ký nhanh bằng Google hoặc dùng email và mật khẩu.', 'Sign up quickly with Google or use email and password.');
+      copy.textContent = text('Tạo tài khoản TÔI LÀ AI bằng Google hoặc email và mật khẩu.', 'Create your TÔI LÀ AI account with Google or email and password.');
       form.innerHTML = `${field(text('Tên hiển thị', 'Display name'), 'name', 'text', 'name', text('Tên của bạn', 'Your name'), 'required maxlength="80"')}${field('Email', 'email', 'email', 'email', 'you@example.com', 'required')}${field(text('Mật khẩu', 'Password'), 'password', 'password', 'new-password', '', 'required minlength="8" maxlength="128"')}<button class="button" type="submit">${text('Tạo tài khoản', 'Create account')}</button>`;
     } else if (mode === 'forgot') {
+      if (googleButton) googleButton.hidden = true;
+      if (divider) divider.hidden = true;
       title.textContent = text('Khôi phục mật khẩu', 'Reset password');
       copy.textContent = text('Nhập email để nhận liên kết đặt lại mật khẩu.', 'Enter your email to receive a password reset link.');
       form.innerHTML = `${field('Email', 'email', 'email', 'email', 'you@example.com', 'required')}<button class="button" type="submit">${text('Gửi liên kết', 'Send reset link')}</button>`;
     } else if (mode === 'reset') {
+      if (googleButton) googleButton.hidden = true;
+      if (divider) divider.hidden = true;
       title.textContent = text('Đặt mật khẩu mới', 'Set a new password');
       copy.textContent = text('Nhập mật khẩu mới cho tài khoản của bạn.', 'Enter a new password for your account.');
       form.innerHTML = `${field(text('Mật khẩu mới', 'New password'), 'newPassword', 'password', 'new-password', '', 'required minlength="8" maxlength="128"')}<button class="button" type="submit">${text('Lưu mật khẩu mới', 'Save new password')}</button>`;
     } else if (mode === 'change-password') {
+      if (googleButton) googleButton.hidden = true;
+      if (divider) divider.hidden = true;
       title.textContent = text('Đổi mật khẩu', 'Change password');
       copy.textContent = text('Xác nhận mật khẩu hiện tại trước khi đặt mật khẩu mới.', 'Confirm your current password before setting a new one.');
       form.innerHTML = `${field(text('Mật khẩu hiện tại', 'Current password'), 'currentPassword', 'password', 'current-password', '', 'required minlength="8" maxlength="128"')}${field(text('Mật khẩu mới', 'New password'), 'newPassword', 'password', 'new-password', '', 'required minlength="8" maxlength="128"')}<button class="button" type="submit">${text('Đổi mật khẩu', 'Change password')}</button>`;
     } else {
       authState.mode = 'login';
-      configureGoogle('login');
       title.textContent = text('Đăng nhập', 'Sign in');
-      copy.textContent = text('Đăng nhập nhanh bằng Google hoặc tiếp tục bằng email.', 'Sign in quickly with Google or continue with email.');
+      copy.textContent = text('Tiếp tục bằng Google hoặc email và mật khẩu.', 'Continue with Google or email and password.');
       form.innerHTML = `${field('Email', 'email', 'email', 'email', 'you@example.com', 'required')}${field(text('Mật khẩu', 'Password'), 'password', 'password', 'current-password', '', 'required minlength="8" maxlength="128"')}<label><span>${text('Ghi nhớ đăng nhập', 'Remember me')}</span><input name="rememberMe" type="checkbox" checked></label><button class="button" type="submit">${text('Đăng nhập', 'Sign in')}</button>`;
     }
     configureSwitches(authState.mode);
     window.openShell?.('auth-shell');
   }
 
+  async function signInGoogle() {
+    if (authState.busy) return;
+    authState.busy = true;
+    if (googleButton) googleButton.disabled = true;
+    setNote(text('Đang mở Google…', 'Opening Google…'));
+    try {
+      const payload = await authRequest('sign-in/social', { method: 'POST', body: { provider: 'google', callbackURL: `${location.origin}/`, errorCallbackURL: `${location.origin}/?auth=error`, newUserCallbackURL: `${location.origin}/` } });
+      if (!payload?.url) throw new Error(text('Không nhận được liên kết đăng nhập Google.', 'Google sign-in did not return a redirect URL.'));
+      location.assign(payload.url);
+    } catch (error) {
+      setNote(error.message, true);
+      authState.busy = false;
+      if (googleButton) googleButton.disabled = false;
+    }
+  }
+
   async function hydrateSession() {
-    authState.session = null;
-    authState.sessionSource = null;
     try {
       const data = await authRequest('get-session');
-      if (data?.user) {
-        authState.session = data;
-        authState.sessionSource = 'proxy';
-      }
-    } catch {}
-
-    if (!authState.session) {
-      try {
-        const data = await directAuthRequest('get-session');
-        if (data?.user) {
-          authState.session = data;
-          authState.sessionSource = 'neon';
-        }
-      } catch {}
+      authState.session = data?.user ? data : null;
+    } catch {
+      authState.session = null;
     }
-
     renderAuthNav();
     return authState.session;
   }
 
   async function signOut() {
-    const results = await Promise.allSettled([
-      authRequest('sign-out', { method: 'POST', body: {} }),
-      directAuthRequest('sign-out', { method: 'POST', body: {} })
-    ]);
-    if (results.every(result => result.status === 'rejected')) {
-      setNote(text('Không thể đăng xuất lúc này.', 'Unable to sign out right now.'), true);
+    try {
+      await authRequest('sign-out', { method: 'POST', body: {} });
+    } catch (error) {
+      setNote(error.message, true);
       return;
     }
     authState.session = null;
-    authState.sessionSource = null;
     renderAuthNav();
     window.closeShells?.();
   }
@@ -243,16 +196,14 @@
     if (workspaceTitle) workspaceTitle.textContent = section === 'account' ? text('Tài khoản', 'Account') : section === 'usage' ? text('Sử dụng / Credits', 'Usage / Credits') : section === 'billing' ? 'Billing' : section === 'creations' ? text('Sản phẩm đã tạo', 'My Creations') : section === 'tools' ? text('Công cụ', 'Tools') : section === 'help' ? text('Trợ giúp', 'Help') : 'Home';
 
     if (section === 'account') {
-      workspaceCard([user.name || text('Tài khoản TÔI LÀ AI', 'TÔI LÀ AI account'), user.email || '', text('Phiên đăng nhập đang hoạt động và được Neon Auth bảo vệ.', 'Your active session is protected by Neon Auth.')]);
-      if (authState.sessionSource === 'proxy') {
-        const box = $('#workspace-content');
-        const button = document.createElement('button');
-        button.className = 'button button-outline';
-        button.type = 'button';
-        button.dataset.auth = 'change-password';
-        button.textContent = text('Đổi mật khẩu', 'Change password');
-        box?.append(button);
-      }
+      workspaceCard([user.name || text('Tài khoản TÔI LÀ AI', 'TÔI LÀ AI account'), user.email || '', text('Phiên đăng nhập đang hoạt động và được Neon Auth bảo vệ.', 'Your session is active and protected by Neon Auth.')]);
+      const box = $('#workspace-content');
+      const button = document.createElement('button');
+      button.className = 'button button-outline';
+      button.type = 'button';
+      button.dataset.auth = 'change-password';
+      button.textContent = text('Đổi mật khẩu', 'Change password');
+      box?.append(button);
     } else if (section === 'tools') {
       workspaceCard([text('11 công cụ đang hoạt động', '11 active tools'), text('Mở mục Sản phẩm trên trang chính để sử dụng các công cụ đã được kiểm thử.', 'Use the Products section on the homepage to access tested tools.')]);
     } else if (section === 'creations') {
@@ -264,7 +215,7 @@
     } else if (section === 'help') {
       workspaceCard([text('Hỗ trợ', 'Help'), 'admintoilaai@gmail.com']);
     } else {
-      workspaceCard([`${text('Xin chào', 'Hello')}, ${user.name || user.email}`, text('Tài khoản đã đăng nhập. Bạn có thể dùng các công cụ public hiện có và quản lý tài khoản.', 'You are signed in. You can use the current public tools and manage your account.')]);
+      workspaceCard([`${text('Xin chào', 'Hello')}, ${user.name || user.email}`, text('Tài khoản đã đăng nhập. Bạn có thể dùng các công cụ public hiện có và quản lý bảo mật tài khoản.', 'You are signed in. You can use the current public tools and manage account security.')]);
     }
   }
 
@@ -320,15 +271,9 @@
     if (event.target === form) handleSubmit(event);
   }, true);
 
-  document.addEventListener('click', event => {
-    const google = event.target.closest('.google-button');
-    if (google && !google.hidden) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      startGoogleSignIn();
-      return;
-    }
+  googleButton?.addEventListener('click', event => { event.preventDefault(); event.stopImmediatePropagation(); signInGoogle(); }, true);
 
+  document.addEventListener('click', event => {
     const authButton = event.target.closest('[data-auth]');
     if (authButton) {
       event.preventDefault();
@@ -364,19 +309,5 @@
   rememberAuthSlots();
   const params = new URLSearchParams(location.search);
   if (params.get('auth') === 'reset' && params.get('token')) authState.resetToken = params.get('token');
-  const googleReturn = params.get('auth') === 'google';
-  const googleError = params.get('auth') === 'google-error';
-  hydrateSession().finally(() => {
-    if (authState.resetToken) return openAuthReal('reset');
-    if (googleReturn) {
-      if (authState.session?.user) history.replaceState({}, '', `${location.pathname}${location.hash || ''}`);
-      else {
-        openAuthReal('login');
-        setNote(text('Chưa hoàn tất đăng nhập Google. Vui lòng thử lại.', 'Google sign-in did not complete. Please try again.'), true);
-      }
-    } else if (googleError) {
-      openAuthReal('login');
-      setNote(text('Google đã trả về lỗi đăng nhập. Vui lòng thử lại.', 'Google returned a sign-in error. Please try again.'), true);
-    }
-  });
+  hydrateSession().finally(() => { if (authState.resetToken) openAuthReal('reset'); });
 })();
