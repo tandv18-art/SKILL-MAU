@@ -31,6 +31,20 @@
     return card;
   }
 
+  function renderError(root, message) {
+    root.innerHTML = '';
+    const card = document.createElement('div');
+    card.className = 'workspace-empty';
+    const icon = document.createElement('span');
+    icon.textContent = '!';
+    const title = document.createElement('b');
+    title.textContent = 'Không tải được hạn mức';
+    const copy = document.createElement('p');
+    copy.textContent = message || 'Vui lòng thử lại.';
+    card.append(icon, title, copy);
+    root.append(card);
+  }
+
   async function renderQuotaUsage() {
     const active = $('#workspace-nav button.active')?.dataset.workspace;
     const root = $('#workspace-content');
@@ -43,13 +57,13 @@
       const limits = payload.limits || {};
       const usage = payload.usage || {};
       const remaining = payload.remaining || {};
-      const freeLifetimeImages = limits.imageLifetime != null;
+      const lifetimeImages = limits.imageLifetime != null;
       const textLimit = limits.textMonthly;
-      const imageLimit = freeLifetimeImages ? limits.imageLifetime : limits.imageMonthly;
+      const imageLimit = lifetimeImages ? limits.imageLifetime : limits.imageMonthly;
       const textUsed = usage.textMonthly || 0;
-      const imageUsed = freeLifetimeImages ? (usage.imageLifetime || 0) : (usage.imageMonthly || 0);
+      const imageUsed = lifetimeImages ? (usage.imageLifetime || 0) : (usage.imageMonthly || 0);
       const textRemaining = remaining.textMonthly;
-      const imageRemaining = freeLifetimeImages ? remaining.imageLifetime : remaining.imageMonthly;
+      const imageRemaining = lifetimeImages ? remaining.imageLifetime : remaining.imageMonthly;
 
       root.innerHTML = '';
       const wrap = document.createElement('div');
@@ -64,8 +78,8 @@
       title.textContent = `Hạn mức gói ${planName(payload.planId)}`;
       const period = document.createElement('div');
       period.className = 'workspace-note';
-      period.textContent = freeLifetimeImages
-        ? 'Text được tính theo kỳ hiện tại; 3 ảnh Free là tổng lượt thử trọn đời.'
+      period.textContent = lifetimeImages
+        ? `Text được tính theo kỳ hiện tại; ${formatValue(imageLimit)} ảnh Free là tổng lượt thử trọn đời.`
         : 'Hạn mức được tính theo kỳ dịch vụ hiện tại.';
       heading.append(badge, title, period);
       wrap.append(heading);
@@ -88,7 +102,7 @@
       root.append(wrap);
     } catch (error) {
       if ($('#workspace-nav button.active')?.dataset.workspace !== 'usage') return;
-      root.innerHTML = `<div class="workspace-empty"><span>!</span><b>Không tải được hạn mức</b><p>${String(error.message || 'Vui lòng thử lại.')}</p></div>`;
+      renderError(root, String(error.message || 'Vui lòng thử lại.'));
     }
   }
 
