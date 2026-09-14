@@ -10,6 +10,7 @@ const sitemap = read('sitemap.xml');
 const vercel = JSON.parse(read('vercel.json'));
 const checkout = read('checkout-runtime.js');
 const product = read('main-product.js');
+const i18n = read('i18n.js');
 
 assert.match(index, /<link rel="canonical" href="https:\/\/toilaai\.net\/">/);
 assert.match(index, /<meta property="og:url" content="https:\/\/toilaai\.net\/">/);
@@ -33,5 +34,8 @@ assert.equal(vercel.cleanUrls, true, 'clean URLs must expose /privacy and /terms
 
 assert.match(checkout, /const CHECKOUT_LIVE_ENABLED = false;/, 'main-site real checkout must stay locked');
 assert.match(product, /https:\/\/ai-social-post-kit\.vercel\.app/, 'main product CTA must keep SaaS separate');
+assert.match(product, /SẢN PHẨM CHÍNH · WEB APP/, 'SaaS must remain visibly identified as the primary Web App product');
+assert.match(i18n, /pricing:\{title:'GÓI CÔNG CỤ AI'/, 'tool pricing must be visibly distinct from SaaS pricing');
+assert.match(i18n, /pricing:'Gói công cụ'/, 'navigation must label the main-site tool plans explicitly');
 
 console.log('WEB22 domain readiness test passed.');
