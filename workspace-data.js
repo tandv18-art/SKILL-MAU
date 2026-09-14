@@ -164,7 +164,7 @@
       const stats = document.createElement('div'); stats.className = 'workspace-stat-grid';
       [['Tổng lượt',totals.total],['Tháng này',totals.month],['Nội dung',totals.text],['Hình ảnh',totals.image]].forEach(([label,value]) => { const card=document.createElement('div'); card.className='workspace-stat'; const small=document.createElement('small'); small.textContent=label; const strong=document.createElement('b'); strong.textContent=String(value); card.append(small,strong); stats.append(card); });
       wrap.append(stats);
-      const note = document.createElement('div'); note.className = 'workspace-row workspace-note'; note.textContent = 'Đây là số lượt sử dụng thực tế đã ghi nhận theo tài khoản. Điểm/credit và hạn mức theo gói sẽ chỉ được áp dụng sau khi chốt cơ chế tính phí để tránh tính sai cho người dùng.'; wrap.append(note);
+      const note = document.createElement('div'); note.className = 'workspace-row workspace-note'; note.textContent = 'Số lượt được ghi nhận ở máy chủ sau khi công cụ tạo kết quả thành công. Hạn mức theo gói chỉ được chặn khi hệ thống quota được bật chính thức.'; wrap.append(note);
       root.append(wrap);
     } catch (error) {
       empty('Không tải được mức sử dụng', error.message);
@@ -217,7 +217,6 @@
     recording = true;
     try {
       await api('workspace_creations', { method: 'POST', body, prefer: 'return=minimal' });
-      await api('workspace_usage', { method: 'POST', body: { skill_id: activeSkillId, kind, units: 1 }, prefer: 'return=minimal' });
     } catch (error) {
       console.warn('Không thể lưu lịch sử tài khoản:', error.message);
     } finally {

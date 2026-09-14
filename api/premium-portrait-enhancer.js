@@ -1,2 +1,3 @@
 const { generatePortrait } = require('../lib/image-storage-runtime');
-module.exports = generatePortrait;
+const { withUsageGate } = require('../lib/usage-gated-handler');
+module.exports = withUsageGate(generatePortrait, { kind: 'image', skillId: 'premium-portrait-enhancer' });

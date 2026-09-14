@@ -122,7 +122,8 @@ $('#skill-form').addEventListener('submit', async event => {
   try {
     const endpoint = IMAGE_ENDPOINTS[state.activeSkill.id];
     const response = await fetch(endpoint, { method: 'POST', body: formData }); const payload = await response.json();
-    if (!response.ok || !payload.success || !Array.isArray(payload.images) || !payload.images.length) throw new Error('Generation failed');
+    if (!response.ok || !payload.success) { renderTextRuntimeMessage(box, typeof payload.error === 'string' ? payload.error : t('launcher.generationError')); $('[data-regenerate]').hidden = payload.code === 'LIMIT_REACHED'; return; }
+    if (!Array.isArray(payload.images) || !payload.images.length) throw new Error('Generation failed');
     renderProductImages(box, payload.images, state.activeSkill.id === 'world-checkin' ? 'launcher.worldGeneratedAlt' : 'launcher.generatedAlt');
   } catch { box.className = 'result-box error'; box.innerHTML = `<span class="result-icon">!</span><b>${t('launcher.generationError')}</b><p>${t('launcher.tryAgain')}</p>`; $('[data-regenerate]').hidden = false; }
 });

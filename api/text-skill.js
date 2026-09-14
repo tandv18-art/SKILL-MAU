@@ -1,2 +1,3 @@
 const { runTextSkill } = require('../lib/skill-runtime');
-module.exports = runTextSkill;
+const { withUsageGate } = require('../lib/usage-gated-handler');
+module.exports = withUsageGate(runTextSkill, { kind: 'text' });

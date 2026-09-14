@@ -1,8 +1,25 @@
 window.AIOS_PRICING = [
-  {id:'free',name:'Free',price:'0đ',currency:'VND',billingPeriod:null,messageVi:'Trải nghiệm các công cụ thiết yếu.',messageEn:'Explore essential tools.',benefitsVi:['Tóm tắt văn bản','Viết lại văn bản','Dịch văn bản','1 lượt thử tạo ảnh miễn phí'],benefitsEn:['Summarize text','Rewrite text','Translate text','One free image trial'],recommended:false,enabled:true,monthlyCredits:null,usageLimits:null,checkoutPlanKey:null},
-  {id:'starter',name:'Starter',price:'49.000đ',currency:'VND',billingPeriod:'month',messageVi:'Công cụ AI thiết yếu cho nhu cầu hằng ngày.',messageEn:'Essential AI tools for everyday needs.',benefitsVi:['Công cụ văn bản cơ bản','Nhu cầu sử dụng hằng ngày','Nâng cấp linh hoạt'],benefitsEn:['Core text tools','Everyday usage','Flexible upgrade'],recommended:false,enabled:true,monthlyCredits:null,usageLimits:null,checkoutPlanKey:null},
-  {id:'creator-pro',name:'Creator Pro',price:'129.000đ',currency:'VND',billingPeriod:'month',messageVi:'Từ ý tưởng đến nội dung sẵn sàng đăng.',messageEn:'From idea to publish-ready content.',benefitsVi:['Hook video ngắn','Caption thu hút','Kế hoạch nội dung 7 ngày','Kịch bản Reel 30 giây','Brief thumbnail'],benefitsEn:['Short-video hooks','Engaging captions','7-day content plan','30-second Reel script','Thumbnail brief'],recommended:false,enabled:true,monthlyCredits:null,usageLimits:null,checkoutPlanKey:null},
-  {id:'seller-pro',name:'Seller Pro',price:'149.000đ',currency:'VND',billingPeriod:'month',messageVi:'Hình ảnh và nội dung cho bán hàng.',messageEn:'Images and content for selling.',benefitsVi:['Ảnh sản phẩm','Mô tả sản phẩm','Caption thu hút','Kế hoạch nội dung 7 ngày','Brief thumbnail'],benefitsEn:['Product photos','Product descriptions','Engaging captions','7-day content plan','Thumbnail brief'],recommended:true,enabled:true,monthlyCredits:null,usageLimits:null,checkoutPlanKey:null},
-  {id:'photo-pro',name:'Photo Pro',price:'149.000đ',currency:'VND',billingPeriod:'month',messageVi:'Ảnh tự nhiên, chỉn chu và đúng ý.',messageEn:'Natural, polished images made your way.',benefitsVi:['Nâng cấp chân dung','Check-in thế giới','Thử kiểu tóc','Bưu thiếp du lịch','Thử trang phục'],benefitsEn:['Portrait enhancement','World check-in','Hairstyle try-on','Travel postcard','Virtual try-on'],recommended:false,enabled:true,monthlyCredits:null,usageLimits:null,checkoutPlanKey:null},
-  {id:'all-in',name:'All-in',price:'249.000đ',currency:'VND',billingPeriod:'month',messageVi:'Toàn bộ công cụ AIOS Lab.',messageEn:'Every AIOS Lab tool.',benefitsVi:['Toàn bộ công cụ hiện có','Công cụ mới trong tương lai','Một không gian làm việc thống nhất'],benefitsEn:['All available tools','Future tools','One unified workspace'],recommended:false,enabled:true,monthlyCredits:null,usageLimits:null,checkoutPlanKey:null}
+  {id:'free',name:'Free',price:'0đ',currency:'VND',billingPeriod:null,messageVi:'Trải nghiệm trước khi nâng cấp.',messageEn:'Try the core experience before upgrading.',benefitsVi:['10 lần tạo nội dung','3 ảnh thử miễn phí trọn đời','Không cần thanh toán'],benefitsEn:['10 text generations','3 lifetime trial images','No payment required'],recommended:false,enabled:true,monthlyCredits:null,usageLimits:{text:10,imageLifetime:3},checkoutPlanKey:null},
+  {id:'starter',name:'Starter',price:'49.000đ',currency:'VND',billingPeriod:'month',messageVi:'Công cụ nội dung AI cho nhu cầu hằng ngày.',messageEn:'AI content tools for everyday needs.',benefitsVi:['150 lần tạo nội dung / 30 ngày','Không bao gồm lượt tạo ảnh','Nâng cấp linh hoạt khi cần'],benefitsEn:['150 text generations / 30 days','No image-generation quota','Upgrade anytime'],recommended:false,enabled:true,monthlyCredits:null,usageLimits:{text:150,image:0},checkoutPlanKey:'starter'},
+  {id:'creator-pro',name:'Creator Pro',price:'129.000đ',currency:'VND',billingPeriod:'month',messageVi:'Dành cho người sáng tạo nội dung thường xuyên.',messageEn:'For frequent content creation.',benefitsVi:['500 lần tạo nội dung / 30 ngày','Không bao gồm lượt tạo ảnh','Phù hợp nội dung đa nền tảng'],benefitsEn:['500 text generations / 30 days','No image-generation quota','Built for multi-platform content'],recommended:false,enabled:true,monthlyCredits:null,usageLimits:{text:500,image:0},checkoutPlanKey:'creator-pro'},
+  {id:'seller-pro',name:'Seller Pro',price:'149.000đ',currency:'VND',billingPeriod:'month',messageVi:'Nội dung và hình ảnh cho bán hàng.',messageEn:'Content and images for selling.',benefitsVi:['250 lần tạo nội dung / 30 ngày','8 lần tạo ảnh / 30 ngày','Phù hợp bán hàng và sản phẩm'],benefitsEn:['250 text generations / 30 days','8 image generations / 30 days','Built for commerce workflows'],recommended:true,enabled:true,monthlyCredits:null,usageLimits:{text:250,image:8},checkoutPlanKey:'seller-pro'},
+  {id:'photo-pro',name:'Photo Pro',price:'149.000đ',currency:'VND',billingPeriod:'month',messageVi:'Ưu tiên trải nghiệm hình ảnh AI.',messageEn:'Image-first AI experience.',benefitsVi:['50 lần tạo nội dung / 30 ngày','10 lần tạo ảnh / 30 ngày','Phù hợp chỉnh ảnh và sáng tạo hình ảnh'],benefitsEn:['50 text generations / 30 days','10 image generations / 30 days','Built for image creation and enhancement'],recommended:false,enabled:true,monthlyCredits:null,usageLimits:{text:50,image:10},checkoutPlanKey:'photo-pro'},
+  {id:'all-in',name:'All-in',price:'249.000đ',currency:'VND',billingPeriod:'month',messageVi:'Hạn mức cao nhất cho toàn bộ nhu cầu.',messageEn:'Highest limits across the whole workspace.',benefitsVi:['500 lần tạo nội dung / 30 ngày','15 lần tạo ảnh / 30 ngày','Dùng toàn bộ công cụ hiện có'],benefitsEn:['500 text generations / 30 days','15 image generations / 30 days','Use all available tools'],recommended:false,enabled:true,monthlyCredits:null,usageLimits:{text:500,image:15},checkoutPlanKey:'all-in'}
 ];
+
+(() => {
+  const checkout = document.createElement('script');
+  checkout.src = '/checkout-runtime.js?v=web21-final-quota';
+  checkout.async = false;
+  document.head.append(checkout);
+
+  const quota = document.createElement('script');
+  quota.src = '/quota-ui.js?v=web21-final-quota';
+  quota.async = false;
+  document.head.append(quota);
+
+  const mainProduct = document.createElement('script');
+  mainProduct.src = '/main-product.js?v=web21-main-product';
+  mainProduct.async = false;
+  document.head.append(mainProduct);
+})();
