@@ -11,6 +11,8 @@ const vercel = JSON.parse(read('vercel.json'));
 const checkout = read('checkout-runtime.js');
 const product = read('main-product.js');
 const i18n = read('i18n.js');
+const pricing = read('pricing-config.js');
+const heroMedia = read('hero-media.js');
 
 assert.match(index, /<link rel="canonical" href="https:\/\/toilaai\.net\/">/);
 assert.match(index, /<meta property="og:url" content="https:\/\/toilaai\.net\/">/);
@@ -38,4 +40,17 @@ assert.match(product, /SẢN PHẨM CHÍNH · WEB APP/, 'SaaS must remain visibl
 assert.match(i18n, /pricing:\{title:'GÓI CÔNG CỤ AI'/, 'tool pricing must be visibly distinct from SaaS pricing');
 assert.match(i18n, /pricing:'Gói công cụ'/, 'navigation must label the main-site tool plans explicitly');
 
-console.log('WEB22 domain readiness test passed.');
+assert.match(pricing, /hero-media\.js\?v=web22-hero-media/, 'hero media layer must load from the homepage');
+for (const file of [
+  'assets/hero-world-checkin.svg',
+  'assets/hero-product-photo.svg',
+  'assets/hero-premium-portrait.svg',
+  'assets/hero-content-ai.svg',
+  'hero-media.css'
+]) assert.ok(fs.existsSync(file), `${file} must exist`);
+for (const asset of ['hero-world-checkin.svg','hero-product-photo.svg','hero-premium-portrait.svg','hero-content-ai.svg']) {
+  assert.ok(heroMedia.includes(asset), `hero carousel must reference ${asset}`);
+}
+assert.match(heroMedia, /loading = index === 0 \? 'eager' : 'lazy'/, 'only the first hero image should load eagerly');
+
+console.log('WEB22 domain readiness + hero media test passed.');
