@@ -32,6 +32,14 @@ The Blob store remains private. Public image delivery only accepts sanitized man
 ## Auth polish
 Stale auth error parameters are removed once a valid signed-in session exists. If Google returns an unlinked-account error, the UI tells the user to use the existing email and password account.
 
+## Verified Preview acceptance
+- real photo upload: PASS
+- save / reorder / delete: PASS
+- private Blob image delivery: PASS
+- public Hero renders saved photos: PASS
+- final Vercel Preview: READY
+- Vercel status: SUCCESS
+
 ## Safety invariants
 - AI Social Post Kit is unchanged.
 - Facebook and TikTok publishing are unchanged.
