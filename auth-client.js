@@ -255,6 +255,15 @@
       button.dataset.auth = 'change-password';
       button.textContent = 'Đổi mật khẩu';
       box?.append(button);
+
+      const roles = String(user.role || '').split(',').map(item => item.trim().toLowerCase());
+      if (roles.includes('admin')) {
+        const heroLink = document.createElement('a');
+        heroLink.className = 'button button-outline';
+        heroLink.href = '/hero-admin';
+        heroLink.textContent = text('Quản lý ảnh trang chủ', 'Manage homepage images');
+        box?.append(heroLink);
+      }
     } else if (section === 'tools') {
       workspaceCard(['11 công cụ đang hoạt động', 'Mở mục Sản phẩm trên trang chính để sử dụng các công cụ đã được kiểm thử.']);
     } else if (section === 'creations') {
