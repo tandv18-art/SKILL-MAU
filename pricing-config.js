@@ -24,7 +24,7 @@ window.AIOS_PRICING = [
   document.head.append(mainProduct);
 
   const heroMedia = document.createElement('script');
-  heroMedia.src = '/hero-media.js?v=web22-hero-media';
+  heroMedia.src = '/hero-media.js?v=web41';
   heroMedia.async = false;
   document.head.append(heroMedia);
 })();

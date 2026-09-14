@@ -20,6 +20,14 @@
     note.dataset.status = isError ? 'error' : 'info';
   }
 
+  function cleanAuthErrorQuery() {
+    const clean = new URL(location.href);
+    clean.searchParams.delete('auth');
+    clean.searchParams.delete('error');
+    clean.searchParams.delete('neon_auth_session_verifier');
+    history.replaceState({}, '', `${clean.pathname}${clean.search}${clean.hash}`);
+  }
+
   function localizeAccountUi() {
     const labels = {
       home: '⌂ Trang chủ',
@@ -299,7 +307,8 @@
         setNote(text('Đã đổi mật khẩu và thu hồi các phiên khác.', 'Password changed and other sessions revoked.'));
       } else {
         await authRequest('sign-in/email', { method: 'POST', body: { email: String(data.get('email') || '').trim(), password: String(data.get('password') || ''), rememberMe: data.get('rememberMe') === 'on' } });
-        await hydrateSession();
+        const session = await hydrateSession();
+        if (session?.user) cleanAuthErrorQuery();
         window.closeShells?.();
       }
     } catch (error) {
@@ -365,22 +374,28 @@
 
   const params = new URLSearchParams(location.search);
   const verifier = params.get('neon_auth_session_verifier') || '';
+  const authError = params.get('auth') === 'error' ? (params.get('error') || 'oauth_error') : '';
   if (params.get('auth') === 'reset' && params.get('token')) authState.resetToken = params.get('token');
-  if (params.get('auth') === 'error') setTimeout(() => { openAuthReal('login'); setNote(text('Đăng nhập Google chưa hoàn tất. Vui lòng thử lại.', 'Google sign-in did not complete. Please try again.'), true); }, 0);
 
   (async () => {
     if (verifier) {
       const session = await hydrateSession(verifier);
-      const clean = new URL(location.href);
-      clean.searchParams.delete('neon_auth_session_verifier');
-      clean.searchParams.delete('auth');
-      history.replaceState({}, '', `${clean.pathname}${clean.search}${clean.hash}`);
+      cleanAuthErrorQuery();
       if (!session?.user) {
         openAuthReal('login');
         setNote(text('Không thể hoàn tất phiên đăng nhập Google. Vui lòng thử lại.', 'Could not complete the Google session. Please try again.'), true);
       }
     } else {
-      await hydrateSession();
+      const session = await hydrateSession();
+      if (session?.user && authError) {
+        cleanAuthErrorQuery();
+      } else if (authError) {
+        openAuthReal('login');
+        const linkedMessage = authError === 'account_not_linked'
+          ? text('Email này đã có tài khoản. Hãy đăng nhập bằng email và mật khẩu.', 'This email already has an account. Sign in with email and password.')
+          : text('Đăng nhập Google chưa hoàn tất. Vui lòng thử lại.', 'Google sign-in did not complete. Please try again.');
+        setNote(linkedMessage, true);
+      }
     }
     if (authState.resetToken) openAuthReal('reset');
   })();
