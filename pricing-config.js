@@ -22,4 +22,9 @@ window.AIOS_PRICING = [
   mainProduct.src = '/main-product.js?v=web21-main-product';
   mainProduct.async = false;
   document.head.append(mainProduct);
+
+  const heroMedia = document.createElement('script');
+  heroMedia.src = '/hero-media.js?v=web22-hero-media';
+  heroMedia.async = false;
+  document.head.append(heroMedia);
 })();
