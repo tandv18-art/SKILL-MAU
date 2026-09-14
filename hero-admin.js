@@ -167,7 +167,7 @@
     if (action === 'down' && index < state.slides.length - 1) [state.slides[index + 1], state.slides[index]] = [state.slides[index], state.slides[index + 1]];
     if (action === 'remove') {
       const removed = state.slides.splice(index, 1)[0];
-      if (removed?.src?.startsWith('https://')) state.pendingDeletes.add(removed.src);
+      if (removed?.src && removed.src !== '/assets/hero-world-checkin.svg') state.pendingDeletes.add(removed.src);
     }
     markDirty(true);
     render();
