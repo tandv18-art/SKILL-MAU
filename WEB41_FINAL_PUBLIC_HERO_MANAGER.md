@@ -4,41 +4,36 @@
 Make the public TÔI LÀ AI homepage easier to operate without code changes.
 
 ## Public hero
-- Hero uses only full-image visual slides.
-- Product-card / portrait-card / prompt-card showcase images are no longer mounted by the runtime.
-- Desktop hero gives more space to the image frame and removes the slight 3D skew.
-- Decorative background polish stays subtle and CSS-only.
-- One World Check-in image remains as the safe fallback if no managed config is available.
+- Hero uses full-image slides only.
+- The image frame is larger and visually balanced against the copy.
+- Subtle decorative polish remains lightweight.
+- One World Check-in visual remains as a fallback.
+- A short benefit line sits under the main CTAs.
+- Mobile uses a shorter responsive image ratio while preserving left / center / right focus.
 
 ## Owner-managed slider
 Owner page: `/hero-admin`
 
-The page lets the site owner:
-- upload JPG/PNG/WEBP images;
-- keep up to 8 images;
-- reorder images;
-- turn individual images on/off;
-- optionally add a short caption;
-- choose left/center/right crop focus;
-- remove images;
-- save changes without GitHub or Vercel.
+The page lets the site admin upload JPG/PNG/WEBP images, keep up to 8 images, reorder them, enable or disable them, add an optional short caption, choose crop focus, remove images, and save without touching GitHub or Vercel.
 
-Browser-side upload preparation resizes photos to a maximum 1800×1150 and converts them to JPEG before upload to keep the site light.
+Browser-side preparation resizes large photos before upload to keep the homepage light.
 
 ## Authorization
-No new admin table or migration is introduced. The authenticated user must match the oldest `workspace_accounts` row. This pins site-owner access to the original workspace account while later customer accounts remain non-admin.
+No new admin table or migration is introduced. An authenticated Neon Auth user with role `admin` can manage the Hero. The original workspace-owner check remains only as a compatibility fallback. Other accounts fail closed.
 
 ## Storage
-Reuses the existing Vercel Blob connection:
+The existing private Vercel Blob store is reused.
 - images: `site/hero/...`
-- immutable versioned configs: `site/hero-config/...`
+- versioned configs: `site/hero-config/...`
+- browser delivery: `/api/hero-image?path=...`
 
-Public hero GET is read-only. Upload/save/delete require the owner check and fail closed.
+The Blob store remains private. Public image delivery only accepts sanitized managed Hero paths and returns cached image bytes. Upload, save, and delete require admin authorization.
+
+## Auth polish
+Stale auth error parameters are removed once a valid signed-in session exists. If Google returns an unlinked-account error, the UI tells the user to use the existing email and password account.
 
 ## Safety invariants
 - AI Social Post Kit is unchanged.
-- Main-site real PayOS checkout stays locked.
-- No Facebook/TikTok publish change.
-- No video gate change.
-- No database migration.
-- No provider-billable AI call is added.
+- Facebook and TikTok publishing are unchanged.
+- No database migration is added.
+- No billable AI call is added.
