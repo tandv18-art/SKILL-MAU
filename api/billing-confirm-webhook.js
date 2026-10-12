@@ -1,4 +1,4 @@
-const { getSession } = require('../lib/auth-session');
+const { requireSiteOwner } = require('../lib/site-owner');
 const { confirmWebhookUrl, configured: payosConfigured } = require('../lib/payos-adapter');
 
 function sendJson(res, status, body) {
@@ -15,37 +15,57 @@ function requestOrigin(req) {
   return host ? `${proto}://${host}` : '';
 }
 
+function productionOrigin() {
+  const configured = String(process.env.TOILAAI_PUBLIC_URL || '').trim().replace(/\/$/, '');
+  if (!configured) return '';
+  try {
+    const url = new URL(configured);
+    return url.protocol === 'https:' ? url.origin : '';
+  } catch {
+    return '';
+  }
+}
+
 module.exports = async function billingConfirmWebhook(req, res) {
   if (req.method !== 'POST') return sendJson(res, 405, { success: false, error: 'Method not allowed.' });
 
-  if (String(process.env.VERCEL_ENV || '') !== 'preview') {
-    return sendJson(res, 403, { success: false, code: 'PREVIEW_ONLY', error: 'Webhook setup is only available in Preview.' });
-  }
-
-  const session = await getSession(req);
-  if (!session?.user?.id) {
-    return sendJson(res, 401, { success: false, code: 'AUTH_REQUIRED', error: 'Authentication required.' });
-  }
+  const owner = await requireSiteOwner(req);
+  if (!owner.ok) return sendJson(res, owner.status, { success: false, code: 'OWNER_REQUIRED', error: owner.error });
 
   if (!payosConfigured()) {
     return sendJson(res, 503, { success: false, code: 'PAYOS_NOT_CONFIGURED', error: 'PayOS credentials are not configured.' });
   }
 
-  const bypass = String(process.env.VERCEL_AUTOMATION_BYPASS_SECRET || '').trim();
-  if (!bypass) {
-    return sendJson(res, 503, {
-      success: false,
-      code: 'BYPASS_SECRET_NOT_CONFIGURED',
-      error: 'Automation bypass secret is not available to the Preview deployment.'
-    });
-  }
+  const runtime = String(process.env.VERCEL_ENV || '');
+  let origin = '';
+  let webhookUrl = '';
 
-  const origin = requestOrigin(req);
-  if (!origin.startsWith('https://')) {
-    return sendJson(res, 500, { success: false, code: 'INVALID_PREVIEW_ORIGIN', error: 'Preview origin is unavailable.' });
+  if (runtime === 'preview') {
+    const bypass = String(process.env.VERCEL_AUTOMATION_BYPASS_SECRET || '').trim();
+    if (!bypass) {
+      return sendJson(res, 503, {
+        success: false,
+        code: 'BYPASS_SECRET_NOT_CONFIGURED',
+        error: 'Automation bypass secret is not available to the Preview deployment.'
+      });
+    }
+    origin = requestOrigin(req);
+    if (!origin.startsWith('https://')) {
+      return sendJson(res, 500, { success: false, code: 'INVALID_PREVIEW_ORIGIN', error: 'Preview origin is unavailable.' });
+    }
+    webhookUrl = `${origin}/api/billing-payos-webhook?x-vercel-protection-bypass=${encodeURIComponent(bypass)}`;
+  } else if (runtime === 'production') {
+    if (String(process.env.PAYOS_WEBHOOK_REGISTRATION_ENABLED || '') !== 'true') {
+      return sendJson(res, 403, { success: false, code: 'REGISTRATION_DISABLED', error: 'Production webhook registration is closed.' });
+    }
+    origin = productionOrigin();
+    if (!origin) {
+      return sendJson(res, 503, { success: false, code: 'PUBLIC_URL_NOT_CONFIGURED', error: 'Production public URL is not configured.' });
+    }
+    webhookUrl = `${origin}/api/billing-payos-webhook`;
+  } else {
+    return sendJson(res, 403, { success: false, code: 'UNSUPPORTED_RUNTIME', error: 'Webhook setup is not available in this environment.' });
   }
-
-  const webhookUrl = `${origin}/api/billing-payos-webhook?x-vercel-protection-bypass=${encodeURIComponent(bypass)}`;
 
   try {
     const data = await confirmWebhookUrl(webhookUrl);
