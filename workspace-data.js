@@ -179,21 +179,72 @@
     return Array.isArray(rows) ? rows[0] || { plan_id: 'free', status: 'active' } : { plan_id: 'free', status: 'active' };
   }
 
+  async function loadBillingStatus() {
+    try {
+      const response = await fetch('/api/billing-status', { credentials: 'same-origin', cache: 'no-store' });
+      const payload = await response.json().catch(() => null);
+      return { live: response.ok && payload?.live === true };
+    } catch {
+      return { live: false };
+    }
+  }
+
+  async function exposeWebhookRegistrationAction(actions, copy) {
+    try {
+      const ownerProbe = await fetch('/api/hero-slides?admin=1', { credentials: 'same-origin', cache: 'no-store' });
+      if (!ownerProbe.ok) return;
+      const confirm = document.createElement('button');
+      confirm.type = 'button';
+      confirm.className = 'button button-outline';
+      confirm.textContent = 'Xác nhận webhook PayOS';
+      confirm.addEventListener('click', async () => {
+        if (confirm.disabled) return;
+        confirm.disabled = true;
+        confirm.textContent = 'Đang xác nhận…';
+        try {
+          const response = await fetch('/api/billing-confirm-webhook', {
+            method: 'POST',
+            credentials: 'same-origin',
+            cache: 'no-store',
+          });
+          const payload = await response.json().catch(() => null);
+          if (!response.ok || payload?.configured !== true) {
+            copy.textContent = payload?.error || 'Chưa thể xác nhận webhook PayOS.';
+            confirm.disabled = false;
+            confirm.textContent = 'Xác nhận webhook PayOS';
+            return;
+          }
+          copy.textContent = `Webhook PayOS đã xác nhận cho ${payload.webhookHost || 'Production'}. Chờ mở cổng bán hàng cuối cùng.`;
+          confirm.remove();
+        } catch {
+          copy.textContent = 'Chưa xác định được kết quả xác nhận webhook. Hệ thống không tự thử lại.';
+          confirm.disabled = false;
+          confirm.textContent = 'Xác nhận webhook PayOS';
+        }
+      });
+      actions.append(confirm);
+    } catch {}
+  }
+
   async function renderBilling() {
     loading();
     try {
-      const account = await getBillingRow();
+      const [account, billingStatus] = await Promise.all([getBillingRow(), loadBillingStatus()]);
       const root = box(); root.innerHTML = '';
       const wrap = document.createElement('div'); wrap.className = 'workspace-data';
       const card = document.createElement('div'); card.className = 'workspace-row';
       const badge = document.createElement('span'); badge.className = 'workspace-badge'; badge.textContent = String(account.plan_id || 'free').toUpperCase();
       const title = document.createElement('b'); title.textContent = `Gói hiện tại: ${account.plan_id === 'free' ? 'Free' : account.plan_id}`;
       const status = document.createElement('div'); status.className = 'workspace-note'; status.textContent = account.status === 'active' ? 'Trạng thái: đang hoạt động.' : `Trạng thái: ${account.status || 'chưa xác định'}.`;
-      const copy = document.createElement('div'); copy.className = 'workspace-note'; copy.textContent = 'Thanh toán tự động chưa được bật. Hệ thống sẽ chỉ kích hoạt phương thức thanh toán sau khi kết nối provider thật; không có nút thanh toán giả.';
+      const copy = document.createElement('div'); copy.className = 'workspace-note';
+      copy.textContent = billingStatus.live
+        ? 'Thanh toán PayOS / VietQR đang hoạt động. Gói chỉ được kích hoạt sau webhook đã xác minh.'
+        : 'Thanh toán PayOS đang tạm khóa. Không có giao dịch nào được tạo khi backend chưa sẵn sàng.';
       const actions = document.createElement('div'); actions.className = 'workspace-actions';
       const viewPlans = document.createElement('button'); viewPlans.type = 'button'; viewPlans.className = 'button button-outline'; viewPlans.textContent = 'Xem gói dịch vụ';
       viewPlans.addEventListener('click', () => { window.closeShells?.(); document.querySelector('#pricing')?.scrollIntoView({ behavior: 'smooth' }); });
       actions.append(viewPlans); card.append(badge,title,status,copy,actions); wrap.append(card); root.append(wrap);
+      if (!billingStatus.live) void exposeWebhookRegistrationAction(actions, copy);
     } catch (error) {
       empty('Không tải được thông tin gói', error.message);
     }

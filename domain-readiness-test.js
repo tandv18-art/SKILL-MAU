@@ -34,7 +34,8 @@ for (const url of ['https://toilaai.net/', 'https://toilaai.net/privacy', 'https
 }
 assert.equal(vercel.cleanUrls, true, 'clean URLs must expose /privacy and /terms');
 
-assert.match(checkout, /const CHECKOUT_LIVE_ENABLED = false;/, 'main-site real checkout must stay locked');
+assert.match(checkout, /fetch\('\/api\/billing-status'/, 'checkout UI must read server-side Production readiness');
+assert.match(checkout, /fetch\('\/api\/billing-create-order'/, 'checkout UI must create an order only after explicit click');
 assert.match(product, /https:\/\/ai-social-post-kit\.vercel\.app/, 'main product CTA must keep SaaS separate');
 assert.match(product, /SẢN PHẨM CHÍNH · WEB APP/, 'SaaS must remain visibly identified as the primary Web App product');
 assert.match(i18n, /pricing:\{title:'GÓI CÔNG CỤ AI'/, 'tool pricing must be visibly distinct from SaaS pricing');

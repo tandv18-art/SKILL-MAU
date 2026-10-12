@@ -1,7 +1,9 @@
 (() => {
-  const CHECKOUT_LIVE_ENABLED = false;
   const $ = (selector, root = document) => root.querySelector(selector);
   let selectedPlanId = null;
+  let checkoutLiveEnabled = false;
+  let checkoutBusy = false;
+  let readinessLoaded = false;
 
   function currentSession() {
     return window.toilaaiAuth?.getSession?.() || null;
@@ -15,6 +17,45 @@
     document.body.classList.remove('modal-open');
   }
 
+  function safeCheckoutUrl(value) {
+    if (typeof value !== 'string') return null;
+    try {
+      const url = new URL(value);
+      return url.protocol === 'https:' ? url.href : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function syncCheckoutUi(message = '') {
+    const button = $('[data-checkout-payos]');
+    if (button) {
+      button.disabled = !checkoutLiveEnabled || checkoutBusy;
+      button.style.opacity = checkoutLiveEnabled && !checkoutBusy ? '1' : '.72';
+      button.style.cursor = checkoutLiveEnabled && !checkoutBusy ? 'pointer' : 'not-allowed';
+    }
+    const status = $('#checkout-status');
+    if (!status) return;
+    if (message) status.textContent = message;
+    else if (checkoutBusy) status.textContent = 'Đang tạo phiên thanh toán an toàn…';
+    else if (checkoutLiveEnabled) status.textContent = 'Bạn sẽ được chuyển sang trang thanh toán bảo mật của PayOS.';
+    else if (readinessLoaded) status.textContent = 'Thanh toán đang tạm khóa. Không có giao dịch nào được tạo.';
+    else status.textContent = 'Đang kiểm tra trạng thái thanh toán…';
+  }
+
+  async function refreshCheckoutReadiness() {
+    try {
+      const response = await fetch('/api/billing-status', { credentials: 'same-origin', cache: 'no-store' });
+      const payload = await response.json().catch(() => null);
+      checkoutLiveEnabled = response.ok && payload?.live === true;
+    } catch {
+      checkoutLiveEnabled = false;
+    } finally {
+      readinessLoaded = true;
+      syncCheckoutUi();
+    }
+  }
+
   function openCheckout(plan) {
     selectedPlanId = plan.id;
     document.querySelectorAll('.shell-overlay.open').forEach(shell => {
@@ -23,17 +64,12 @@
     });
     const shell = $('#checkout-shell');
     const planBox = $('#checkout-plan');
-    const status = $('#checkout-status');
     if (!shell || !planBox) return;
     planBox.innerHTML = `<b>${plan.name}</b><strong>${plan.price}${plan.billingPeriod ? ' / tháng' : ''}</strong>`;
-    if (status) {
-      status.textContent = CHECKOUT_LIVE_ENABLED
-        ? 'Bạn sẽ được chuyển sang trang thanh toán bảo mật của PayOS.'
-        : 'Thanh toán thật đang được khóa trong giai đoạn kiểm thử. Không có giao dịch nào được tạo.';
-    }
     shell.classList.add('open');
     shell.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
+    syncCheckoutUi();
   }
 
   function normalizeCheckoutUi() {
@@ -48,12 +84,9 @@
     const button = document.createElement('button');
     button.type = 'button';
     button.dataset.checkoutPayos = 'true';
-    button.disabled = !CHECKOUT_LIVE_ENABLED;
     button.style.display = 'grid';
     button.style.gap = '3px';
     button.style.textAlign = 'left';
-    button.style.opacity = CHECKOUT_LIVE_ENABLED ? '1' : '.72';
-    button.style.cursor = CHECKOUT_LIVE_ENABLED ? 'pointer' : 'not-allowed';
     button.innerHTML = '<b>PayOS / VietQR</b><span style="font-size:10px;color:#91a098">Chuyển khoản QR ngân hàng</span>';
     grid.append(button);
 
@@ -68,7 +101,49 @@
       status.className = 'shell-note';
       grid.insertAdjacentElement('afterend', status);
     }
-    status.textContent = 'Hiện TÔI LÀ AI chỉ tích hợp PayOS / VietQR. Thanh toán thật chưa được bật trong Preview.';
+    syncCheckoutUi();
+  }
+
+  async function startPayOSCheckout() {
+    if (!checkoutLiveEnabled || checkoutBusy || !selectedPlanId) return;
+
+    if (!currentSession()?.user) {
+      closeShells();
+      window.openAuth?.('login');
+      return;
+    }
+
+    let terminalMessage = '';
+    checkoutBusy = true;
+    syncCheckoutUi();
+    try {
+      const response = await fetch('/api/billing-create-order', {
+        method: 'POST',
+        credentials: 'same-origin',
+        cache: 'no-store',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ planId: selectedPlanId }),
+      });
+      const payload = await response.json().catch(() => null);
+      if (!response.ok) {
+        terminalMessage = response.status === 401
+          ? 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại rồi chủ động thử lại.'
+          : payload?.error || 'Chưa thể tạo phiên thanh toán. Hệ thống không tự thử lại.';
+        return;
+      }
+      const checkoutUrl = safeCheckoutUrl(payload?.order?.checkoutUrl);
+      if (!checkoutUrl) {
+        terminalMessage = 'Phản hồi thanh toán không hợp lệ. Hệ thống không tự thử lại.';
+        return;
+      }
+      terminalMessage = 'Đang chuyển sang PayOS…';
+      window.location.assign(checkoutUrl);
+    } catch {
+      terminalMessage = 'Chưa xác định được kết quả kết nối PayOS. Hệ thống không tự thử lại; vui lòng kiểm tra trước khi thử lại.';
+    } finally {
+      checkoutBusy = false;
+      syncCheckoutUi(terminalMessage);
+    }
   }
 
   document.addEventListener('click', event => {
@@ -92,13 +167,17 @@
     const payosButton = event.target.closest('[data-checkout-payos]');
     if (!payosButton) return;
     event.preventDefault();
-    if (!CHECKOUT_LIVE_ENABLED) return;
-    if (!selectedPlanId) return;
+    void startPayOSCheckout();
   }, true);
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', normalizeCheckoutUi, { once: true });
-  } else {
+  async function mount() {
     normalizeCheckoutUi();
+    await refreshCheckoutReadiness();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => { void mount(); }, { once: true });
+  } else {
+    void mount();
   }
 })();
