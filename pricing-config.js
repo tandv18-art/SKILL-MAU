@@ -9,7 +9,7 @@ window.AIOS_PRICING = [
 
 (() => {
   const checkout = document.createElement('script');
-  checkout.src = '/checkout-runtime.js?v=web21-final-quota';
+  checkout.src = '/checkout-runtime.js?v=web42-payos-live';
   checkout.async = false;
   document.head.append(checkout);
 
