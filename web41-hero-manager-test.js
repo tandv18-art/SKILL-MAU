@@ -45,6 +45,7 @@ assert.match(store, /site\/hero-config\//);
 assert.match(store, /site\/hero\//);
 assert.match(imageApi, /get\(pathname, \{ access: 'private'/);
 assert.match(imageApi, /immutable/);
-assert.match(checkout, /const CHECKOUT_LIVE_ENABLED = false;/);
+assert.match(checkout, /fetch\('\/api\/billing-status'/);
+assert.match(checkout, /checkoutLiveEnabled/);
 
 console.log('WEB41 hero manager regression test passed.');
