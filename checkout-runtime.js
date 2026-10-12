@@ -113,6 +113,7 @@
       return;
     }
 
+    let terminalMessage = '';
     checkoutBusy = true;
     syncCheckoutUi();
     try {
@@ -125,25 +126,23 @@
       });
       const payload = await response.json().catch(() => null);
       if (!response.ok) {
-        if (response.status === 401) {
-          syncCheckoutUi('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại rồi chủ động thử lại.');
-          return;
-        }
-        syncCheckoutUi(payload?.error || 'Chưa thể tạo phiên thanh toán. Hệ thống không tự thử lại.');
+        terminalMessage = response.status === 401
+          ? 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại rồi chủ động thử lại.'
+          : payload?.error || 'Chưa thể tạo phiên thanh toán. Hệ thống không tự thử lại.';
         return;
       }
       const checkoutUrl = safeCheckoutUrl(payload?.order?.checkoutUrl);
       if (!checkoutUrl) {
-        syncCheckoutUi('Phản hồi thanh toán không hợp lệ. Hệ thống không tự thử lại.');
+        terminalMessage = 'Phản hồi thanh toán không hợp lệ. Hệ thống không tự thử lại.';
         return;
       }
-      syncCheckoutUi('Đang chuyển sang PayOS…');
+      terminalMessage = 'Đang chuyển sang PayOS…';
       window.location.assign(checkoutUrl);
     } catch {
-      syncCheckoutUi('Chưa xác định được kết quả kết nối PayOS. Hệ thống không tự thử lại; vui lòng kiểm tra trước khi thử lại.');
+      terminalMessage = 'Chưa xác định được kết quả kết nối PayOS. Hệ thống không tự thử lại; vui lòng kiểm tra trước khi thử lại.';
     } finally {
       checkoutBusy = false;
-      syncCheckoutUi();
+      syncCheckoutUi(terminalMessage);
     }
   }
 
